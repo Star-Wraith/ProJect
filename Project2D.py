@@ -1,7 +1,6 @@
-import turtle
+
 
 from pico2d import *
-import random
 
 class Screen:
     def __init__(self):
@@ -38,41 +37,53 @@ class Cat:
         self.y = 117
         self.frame = 0
         self.pos = 1
+        self.dir = 0
+        self.dir2 = 0
+
 
     def update(self):  # 소년의 행위 구현
         global running
-        global dir
         events = get_events()
         for event in events:
             if event.type == SDL_QUIT:
                 running = False
             elif event.type == SDL_KEYDOWN:
                 if event.key == SDLK_a:
-                    dir = -1
+                    self.dir = -1
+
 
                 elif event.key == SDLK_d:
-                    dir = 1
+                    self.dir = 1
+
+
+                # elif event.key == SDLK_w:
+                #     self.dir2 += 1
+
 
                 elif event.key == SDLK_ESCAPE:
                     running = False
             elif event.type == SDL_KEYUP:
                 if event.key == SDLK_a:
-                    dir = 0
+                    self.dir = 0
+
                     self.pos = 0
 
 
                 elif event.key == SDLK_d:
-                    dir = 0
+                    self.dir = 0
+
                     self.pos = 1
 
 
-        self.x += dir * 5
+        # self.x += dir * 5
+        self.x += self.dir * 5
+        # self.y += self.dir2 * 5
         self.frame = self.frame % 2
 
     def draw(self):
-        if dir == 1 or  self.pos == 1 and dir == 0:
+        if self.dir == 1 or  self.pos == 1 and self.dir == 0:
             self.image.clip_draw(self.frame * 33, 1, 31, 53, self.x, self.y)
-        elif dir == -1 or self.pos == 0 and dir == 0:
+        elif self.dir == -1 or self.pos == 0 and self.dir == 0:
             self.image2.clip_draw(124 - 31 * self.frame, 1, 31, 53, self.x, self.y)
         else:
             self.image.clip_draw(self.frame * 33, 1, 31, 53, self.x, self.y)
@@ -110,7 +121,7 @@ class Cat:
 # initialization code
 open_canvas()
 screen = Screen()
-dir = 0
+# dir = 0
 grass = Grass()  # 잔디 객체를 생성
 boy = Cat()
 count = 0
