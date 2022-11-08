@@ -3,14 +3,16 @@ from pico2d import *
 
 
 
-RD, LD, RU, LU = range(4)
-event_name = ['RD', 'LD', 'RU', 'LU']
+RD, LD, RU, LU, JUMP = range(5)
+event_name = ['RD', 'LD', 'RU', 'LU', 'JUMP']
 
 key_event_table = {
     (SDL_KEYDOWN, SDLK_d): RD,
     (SDL_KEYDOWN, SDLK_a): LD,
     (SDL_KEYUP, SDLK_d): RU,
-    (SDL_KEYUP, SDLK_a): LU
+    (SDL_KEYUP, SDLK_a): LU,
+    (SDL_KEYDOWN, SDLK_j): JUMP,
+    (SDL_KEYDOWN, SDLK_w): JUMP
 }
 
 #2 : 상태의 정의
@@ -20,6 +22,10 @@ class IDLE:
         print('ENTER IDLE')
         self.dir = 0
         self.timer = 1000
+        # if event == JUMP:
+        #     self.jump_flag = 1
+        #     self.jump = self.y
+
 
     @staticmethod
     def exit(self, event):
@@ -32,6 +38,17 @@ class IDLE:
         # self.timer -= 1
         # if self.timer == 0:
         #     self.add_event(TIMER)
+        if self.jump_flag == 1:
+            if self.y < self.jump + 200:
+                self.y += 1
+            else:
+                self.jump_flag = 2
+        if self.jump_flag == 2:
+            if self.y > self.jump:
+                self.y -= 1
+            else:
+                self.jump_flag = 0
+
         pass
 
 
@@ -39,10 +56,24 @@ class IDLE:
     @staticmethod
     def draw(self):
 
+        # if self.face_dir == 1:
+        #     self.image.clip_draw(49, 1, 46, 70, self.x, self.y)
+        #
+        # else:
+        #     self.image2.clip_draw(186 - 46, 1, 46, 70, self.x, self.y)
         if self.face_dir == 1:
-            self.image.clip_draw(49, 1, 46, 70, self.x, self.y)
+            if self.jump_flag == 1 or self.jump_flag == 2:
+                self.image.clip_draw(2 * 49, 1, 46, 70, self.x, self.y)
+            else:
+                self.image.clip_draw(49, 1, 46, 70, self.x, self.y)
+
         else:
-            self.image2.clip_draw(186 - 46, 1, 46, 70, self.x, self.y)
+            if self.jump_flag == 1 or self.jump_flag == 2:
+                self.image2.clip_draw(186 - 46 * 2, 1, 46, 70, self.x, self.y)
+            else:
+                self.image2.clip_draw(186 - 46, 1, 46, 70, self.x, self.y)
+
+
         # else:
         #     self.image.clip_draw(self.frame * 46, 1, 46, 70, self.x, self.y)
         pass
@@ -58,6 +89,11 @@ class RUN:
             self.dir -= 1
         elif event == LU:
             self.dir += 1
+        elif event == JUMP:
+            self.jump_flag = 1
+            self.jump = self.y
+
+
 
 
     def exit(self, event):
@@ -70,6 +106,27 @@ class RUN:
         self.move_delay += 1
         if self.move_delay % 50 == 0:
             self.frame = (self.frame + 1) % 2
+        if self.x >= 400:
+            self.camera_x += 0.1
+            self.x = 400
+        if self.jump_flag == 1:
+            if self.y < self.jump + 200:
+                self.y += 1
+            else:
+                self.jump_flag = 2
+        if self.jump_flag == 2:
+            if self.y > self.jump:
+                self.y -= 1
+            else:
+                self.jump_flag = 0
+
+            # while self.y <= self.jump + 150:
+            #     self.y += 5
+            # while self.y >= self.jump:
+            #     self.y -= 5
+
+        # print(self.camera_x)
+
         # self.frame = (self.frame + 1) % 2
         self.x += self.dir
         self.x = clamp(0, self.x, 800)
@@ -77,9 +134,16 @@ class RUN:
 
     def draw(self):
         if self.dir == 1:
-            self.image.clip_draw(self.frame * 49, 1, 46, 70, self.x, self.y)
+            if self.jump_flag == 1 or self.jump_flag == 2:
+                self.image.clip_draw(2 * 49, 1, 46, 70, self.x, self.y)
+            else:
+                self.image.clip_draw(self.frame * 49, 1, 46, 70, self.x, self.y)
+
         elif self.dir == -1:
-            self.image2.clip_draw(186 - 46 * self.frame, 1, 46, 70, self.x, self.y)
+            if self.jump_flag == 1 or self.jump_flag == 2:
+                self.image2.clip_draw(186 - 46 * 2, 1, 46, 70, self.x, self.y)
+            else:
+                self.image2.clip_draw(186 - 46 * self.frame, 1, 46, 70, self.x, self.y)
         pass
 
 
@@ -88,8 +152,8 @@ class RUN:
 #3. 상태 변환 구현
 
 next_state = {
-    IDLE:  {RU: RUN,  LU: RUN,  RD: RUN,  LD: RUN},
-    RUN:   {RU: IDLE, LU: IDLE, RD: IDLE, LD: IDLE}
+    IDLE:  {RU: RUN,  LU: RUN,  RD: RUN,  LD: RUN, JUMP: RUN},
+    RUN:   {RU: IDLE, LU: IDLE, RD: IDLE, LD: IDLE, JUMP: RUN}
 }
 
 class Cat:
@@ -102,7 +166,9 @@ class Cat:
         self.face_dir = 1
         self.dir = 0
         self.move_delay = 0
-
+        self.camera_x = 0 # 카메라 구현 대기중
+        self.jump = 0
+        self.jump_flag = 0
         self.event_que = []
         self.cur_state = IDLE
         self.cur_state.enter(self, None)
@@ -138,6 +204,8 @@ class Cat:
         #     self.image2.clip_draw(186 - 46 * self.frame, 1, 46, 70, self.x, self.y)
         # else:
         #     self.image.clip_draw(self.frame * 46, 1, 46, 70, self.x, self.y)
+
+
 
     def add_event(self, event):
         self.event_que.insert(0, event)

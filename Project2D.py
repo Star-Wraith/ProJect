@@ -304,6 +304,7 @@ def exit():
     game_world.clear()
 
 def update():
+    global camera, cat
     for game_object in game_world.all_objects():
         game_object.update()
 
