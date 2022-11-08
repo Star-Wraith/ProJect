@@ -2,7 +2,7 @@ from pico2d import *
 
 class Screen:
     def __init__(self):
-        self.image = load_image('batang.png')
+        self.image = load_image('./res/batang.png')
 
     def draw(self):
         self.image.draw(400, 300)

@@ -2,7 +2,7 @@ from pico2d import *
 from Project2D import *
 class Grass:
     def __init__(self):  # 생성자
-        self.image = load_image('brocknormal.PNG')
+        self.image = load_image('./res/brocknormal.PNG')
         self.x = 20
         self.y = 60
 

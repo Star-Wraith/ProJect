@@ -2,7 +2,6 @@ import pico2d
 from pico2d import *
 
 
-
 RD, LD, RU, LU, JUMP = range(5)
 event_name = ['RD', 'LD', 'RU', 'LU', 'JUMP']
 
@@ -92,6 +91,8 @@ class RUN:
         elif event == JUMP:
             self.jump_Sound.set_volume(60)
             self.jump_Sound.play()
+
+
             self.jump_flag = 1
             self.jump = self.y
 
@@ -160,8 +161,8 @@ next_state = {
 
 class Cat:
     def __init__(self):
-        self.image = load_image('players.PNG')
-        self.image2 = load_image('players2.png')
+        self.image = load_image('./res/players.PNG')
+        self.image2 = load_image('./res/players2.png')
         self.x = 50
         self.y = 117
         self.frame = 0
@@ -173,6 +174,9 @@ class Cat:
         self.jump_flag = 0
 
         self.jump_Sound = load_music('./SE/jump.mp3')
+
+
+
 
         self.event_que = []
         self.cur_state = IDLE

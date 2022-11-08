@@ -2,8 +2,8 @@ from pico2d import *
 
 class Enemy_roket:
     def __init__(self, x, y):  # 생성자
-        self.image = load_image('enemy.png')
-        self.image2 = load_image('enemyRe.png')
+        self.image = load_image('./res/enemy.png')
+        self.image2 = load_image('./res/enemyRe.png')
         self.x = x
         self.y = y
         self.y_first = self.y
@@ -31,8 +31,8 @@ class Enemy_roket:
 
 class Enemy_normal:
     def __init__(self, x, y):  # 생성자
-        self.image = load_image('enemy.png')
-        self.image2 = load_image('enemyRe.png')
+        self.image = load_image('./res/enemy.png')
+        self.image2 = load_image('./res/enemyRe.png')
         self.x = x
         self.y = y
         self.dir = 1
@@ -58,8 +58,8 @@ class Enemy_normal:
 
 class Enemy_turtle:
     def __init__(self, x, y):  # 생성자
-        self.image = load_image('enemy.png')
-        self.image2 = load_image('enemyRe.png')
+        self.image = load_image('./res/enemy.png')
+        self.image2 = load_image('./res/enemyRe.png')
         self.x = x
         self.y = y
         self.dir = 1
@@ -86,8 +86,8 @@ class Enemy_turtle:
 
 class Enemy_air:
     def __init__(self, x, y):  # 생성자
-        self.image = load_image('enemy.png')
-        self.image2 = load_image('enemyRe.png')
+        self.image = load_image('./res/enemy.png')
+        self.image2 = load_image('./res/enemyRe.png')
         self.x = x
         self.y = y
         self.dir = 1
