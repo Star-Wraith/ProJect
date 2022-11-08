@@ -90,6 +90,8 @@ class RUN:
         elif event == LU:
             self.dir += 1
         elif event == JUMP:
+            self.jump_Sound.set_volume(60)
+            self.jump_Sound.play()
             self.jump_flag = 1
             self.jump = self.y
 
@@ -169,6 +171,9 @@ class Cat:
         self.camera_x = 0 # 카메라 구현 대기중
         self.jump = 0
         self.jump_flag = 0
+
+        self.jump_Sound = load_music('./SE/jump.mp3')
+
         self.event_que = []
         self.cur_state = IDLE
         self.cur_state.enter(self, None)

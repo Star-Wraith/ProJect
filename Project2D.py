@@ -278,8 +278,15 @@ rocket = None
 enemy = None
 enemy_turtle = None
 enemy_air = None
+stage_bgm = None
 def enter():
-    global cat, grass, running, screen, rocket, enemy, enemy_turtle, enemy_air
+    global cat, grass, running, screen, rocket, enemy, enemy_turtle, enemy_air, stage_bgm
+
+
+    stage_bgm = load_music('./BGM/field.mp3')
+    stage_bgm.set_volume(60)
+    stage_bgm.repeat_play()
+    # ------------ 시작 브금 ------------------
     cat = Cat()
     rocket = Enemy_roket(300, 400)
     enemy = Enemy_normal(500, 104)
@@ -301,10 +308,11 @@ def enter():
 
 
 def exit():
+    global stage_bgm
+    del stage_bgm
     game_world.clear()
 
 def update():
-    global camera, cat
     for game_object in game_world.all_objects():
         game_object.update()
 
