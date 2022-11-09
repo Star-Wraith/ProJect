@@ -1,4 +1,31 @@
 from pico2d import *
+import game_framework
+
+
+
+PIXEL_PER_METER = (10.0 / 0.3) # 10 pixel 30 cm
+# Rocket
+SPEED_ROKET_KMPH = 50.0 # Km / Hour
+SPEED_ROKET_MPM = (SPEED_ROKET_KMPH  * 1000.0 / 60.0)
+SPEED_ROKET_MPS = (SPEED_ROKET_MPM / 60.0)
+SPEED_ROKET_PPS = (SPEED_ROKET_MPS * PIXEL_PER_METER)
+# normal
+SPEED_NORMAL_KMPH = 15.0 # Km / Hour
+SPEED_NORMAL_MPM = (SPEED_NORMAL_KMPH  * 1000.0 / 60.0)
+SPEED_NORMAL_MPS = (SPEED_NORMAL_MPM / 60.0)
+SPEED_NORMAL_PPS = (SPEED_NORMAL_MPS * PIXEL_PER_METER)
+
+# turtle
+SPEED_TURTLE_KMPH = 15.0 # Km / Hour
+SPEED_TURTLE_MPM = (SPEED_TURTLE_KMPH  * 1000.0 / 60.0)
+SPEED_TURTLE_MPS = (SPEED_TURTLE_MPM  / 60.0)
+SPEED_TURTLE_PPS = (SPEED_TURTLE_MPS * PIXEL_PER_METER)
+
+# air
+SPEED_AIR_KMPH = 15.0 # Km / Hour
+SPEED_AIR_MPM = (SPEED_AIR_KMPH  * 1000.0 / 60.0)
+SPEED_AIR_MPS = (SPEED_AIR_MPM  / 60.0)
+SPEED_AIR_PPS = (SPEED_AIR_MPS * PIXEL_PER_METER)
 
 class Enemy_roket:
     def __init__(self, x, y):  # 생성자
@@ -15,7 +42,8 @@ class Enemy_roket:
         #     self.count += 1
         #     if count % 10 == 0:
         #         self.y -= 1
-        self.y += self.dir * 1
+        # self.y += self.dir * 1
+        self.y += self.dir * SPEED_ROKET_PPS * game_framework.frame_time
         if self.y > 600:
             self.dir = -1
             self.y = 600
@@ -43,7 +71,8 @@ class Enemy_normal:
         #     self.count += 1
         #     if count % 10 == 0:
         #         self.y -= 1
-        self.x += self.dir * 1/3
+        # self.x += self.dir * 1/3
+        self.x += self.dir * SPEED_NORMAL_PPS * game_framework.frame_time
         if self.x > self.x_max:
             self.dir = -1
             self.x = self.x_max
@@ -70,7 +99,9 @@ class Enemy_turtle:
         #     self.count += 1
         #     if count % 10 == 0:
         #         self.y -= 1
-        self.x += self.dir * 1/3
+        # self.x += self.dir * 1/3
+        self.x += self.dir * SPEED_TURTLE_PPS * game_framework.frame_time
+
         if self.x > self.x_max:
             self.dir = -1
             self.x = self.x_max

@@ -1,7 +1,6 @@
-import pico2d
+
 from pico2d import *
-
-
+import game_framework
 RD, LD, RU, LU, JUMP = range(5)
 event_name = ['RD', 'LD', 'RU', 'LU', 'JUMP']
 
@@ -106,11 +105,14 @@ class RUN:
 
 
     def do(self):
-        self.move_delay += 1
-        if self.move_delay % 50 == 0:
-            self.frame = (self.frame + 1) % 2
+        # self.move_delay += 1
+        # if self.move_delay % 50 == 0:
+        #     self.frame = (self.frame + 1) % 2
+        self.frame = (self.frame + FRAMES_PER_ACTION * ACTION_PER_TIME * game_framework.frame_time) % 2
+        self.x += self.dir * RUN_SPEED_PPS * game_framework.frame_time
         if self.x >= 400:
             self.camera_x += 0.1
+            # game_framework.camera = self.camera_x
             self.x = 400
         if self.jump_flag == 1:
             if self.y < self.jump + 200:
@@ -140,13 +142,13 @@ class RUN:
             if self.jump_flag == 1 or self.jump_flag == 2:
                 self.image.clip_draw(2 * 49, 1, 46, 70, self.x, self.y)
             else:
-                self.image.clip_draw(self.frame * 49, 1, 46, 70, self.x, self.y)
+                self.image.clip_draw(int(self.frame) * 49, 1, 46, 70, self.x, self.y)
 
         elif self.dir == -1:
             if self.jump_flag == 1 or self.jump_flag == 2:
                 self.image2.clip_draw(186 - 46 * 2, 1, 46, 70, self.x, self.y)
             else:
-                self.image2.clip_draw(186 - 46 * self.frame, 1, 46, 70, self.x, self.y)
+                self.image2.clip_draw(186 - 46 * int(self.frame), 1, 46, 70, self.x, self.y)
         pass
 
 
@@ -158,6 +160,19 @@ next_state = {
     IDLE:  {RU: RUN,  LU: RUN,  RD: RUN,  LD: RUN, JUMP: RUN},
     RUN:   {RU: IDLE, LU: IDLE, RD: IDLE, LD: IDLE, JUMP: RUN}
 }
+
+TIME_PER_ACTION = 0.5
+ACTION_PER_TIME = 1.0 / TIME_PER_ACTION
+FRAMES_PER_ACTION = 2
+
+
+PIXEL_PER_METER = (10.0 / 0.3) # 10 pixel 30 cm
+RUN_SPEED_KMPH = 5.0 # Km / Hour
+RUN_SPEED_MPM = (RUN_SPEED_KMPH * 1000.0 / 60.0)
+RUN_SPEED_MPS = (RUN_SPEED_MPM / 60.0)
+RUN_SPEED_PPS = (RUN_SPEED_MPS * PIXEL_PER_METER)
+
+
 
 class Cat:
     def __init__(self):
@@ -213,6 +228,11 @@ class Cat:
         #     self.image2.clip_draw(186 - 46 * self.frame, 1, 46, 70, self.x, self.y)
         # else:
         #     self.image.clip_draw(self.frame * 46, 1, 46, 70, self.x, self.y)
+
+    def JUMP(self): # jump 이쪽으로 옮길 필요 있음
+        pass
+
+
 
 
 
