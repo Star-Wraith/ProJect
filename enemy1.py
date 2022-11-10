@@ -1,6 +1,6 @@
 from pico2d import *
 import game_framework
-
+import game_world
 
 
 PIXEL_PER_METER = (10.0 / 0.3) # 10 pixel 30 cm
@@ -84,6 +84,16 @@ class Enemy_normal:
             self.image2.clip_draw(397, 27, 55, 49, self.x, self.y)
         else:
             self.image.clip_draw(0, 27, 55, 49, self.x, self.y)
+        draw_rectangle(*self.get_bb())
+    def get_bb(self):
+        return self.x - 30, self.y - 30, self.x + 30, self.y + 30
+
+    def handle_collision(self, other, group):
+        print('ball disapeears')
+        if group == 'cat:enemy':
+            game_world.remove_object(self)
+            game_world.game_world_clear()
+        pass
 
 class Enemy_turtle:
     def __init__(self, x, y):  # 생성자

@@ -1,6 +1,10 @@
 
 from pico2d import *
 import game_framework
+import death
+import game_world
+import Project2D
+
 RD, LD, RU, LU, JUMP = range(5)
 event_name = ['RD', 'LD', 'RU', 'LU', 'JUMP']
 
@@ -199,7 +203,7 @@ class Cat:
 
 
 
-    def update(self):  # 소년의 행위 구현
+    def update(self):
         self.cur_state.do(self)
 
         if self.event_que:
@@ -221,13 +225,7 @@ class Cat:
         self.cur_state.draw(self)
         debug_print('PPPP')
         debug_print(f'Face Dir: {self.face_dir}, Dir: {self.dir}')
-
-        # if self.dir == 1 or self.pos == 1 and self.dir == 0:
-        #     self.image.clip_draw(self.frame * 49, 1, 46, 70, self.x, self.y)
-        # elif self.dir == -1 or self.pos == 0 and self.dir == 0:
-        #     self.image2.clip_draw(186 - 46 * self.frame, 1, 46, 70, self.x, self.y)
-        # else:
-        #     self.image.clip_draw(self.frame * 46, 1, 46, 70, self.x, self.y)
+        draw_rectangle(*self.get_bb())
 
     def JUMP(self): # jump 이쪽으로 옮길 필요 있음
         pass
@@ -243,3 +241,11 @@ class Cat:
         if (event.type, event.key) in key_event_table:
             key_event = key_event_table[(event.type, event.key)]
             self.add_event(key_event)
+
+    def get_bb(self):
+        return self.x - 20, self.y - 40, self.x + 20, self.y + 40
+
+    def handle_collision(self, other, group):
+        game_framework.change_state(death)
+
+        pass
