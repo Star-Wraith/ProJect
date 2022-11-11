@@ -1,7 +1,8 @@
 from pico2d import *
 import game_framework
 import game_world
-
+from cat import Cat
+import Project2D
 
 PIXEL_PER_METER = (10.0 / 0.3) # 10 pixel 30 cm
 # Rocket
@@ -52,10 +53,9 @@ class Enemy_roket:
             self.y = 120
     def draw(self):
         if self.dir == 1:
-            self.image2.clip_draw(229, 0, 55, 76, self.x, self.y)
-
+            self.image2.clip_draw(229, 0, 55, 76, self.x - Project2D.camera, self.y)
         else:
-            self.image.clip_draw(169, 0, 55, 76, self.x, self.y)
+            self.image.clip_draw(169, 0, 55, 76, self.x - Project2D.camera, self.y)
 
 class Enemy_normal:
     def __init__(self, x, y):  # 생성자
@@ -81,18 +81,20 @@ class Enemy_normal:
             self.x = self.x_max - 200
     def draw(self):
         if self.dir == 1:
-            self.image2.clip_draw(397, 27, 55, 49, self.x, self.y)
+            self.image2.clip_draw(397, 27, 55, 49, self.x - Project2D.camera, self.y)
         else:
-            self.image.clip_draw(0, 27, 55, 49, self.x, self.y)
+            self.image.clip_draw(0, 27, 55, 49, self.x - Project2D.camera, self.y)
         draw_rectangle(*self.get_bb())
     def get_bb(self):
-        return self.x - 30, self.y - 30, self.x + 30, self.y + 30
+        return self.x - 30 - Project2D.camera, self.y - 30, self.x + 30 - Project2D.camera, self.y + 30
 
     def handle_collision(self, other, group):
         print('ball disapeears')
         if group == 'cat:enemy':
-            game_world.remove_object(self)
             game_world.game_world_clear()
+        pass
+
+    def handle_collision2(self, other, group):
         pass
 
 class Enemy_turtle:
@@ -120,9 +122,9 @@ class Enemy_turtle:
             self.x = self.x_max - 200
     def draw(self):
         if self.dir == 1:
-            self.image2.clip_draw(340, 8, 55, 76, self.x, self.y)
+            self.image2.clip_draw(340, 8, 55, 76, self.x - Project2D.camera, self.y)
         else:
-            self.image.clip_draw(55, 8, 55, 76, self.x, self.y)
+            self.image.clip_draw(55, 8, 55, 76, self.x - Project2D.camera, self.y)
 
 
 class Enemy_air:
@@ -149,6 +151,6 @@ class Enemy_air:
 
     def draw(self):
         if self.dir == 1:
-            self.image2.clip_draw(54, 20, 60, 56, self.x, self.y)
+            self.image2.clip_draw(54, 20, 60, 56, self.x - Project2D.camera, self.y)
         else:
-            self.image.clip_draw(340, 20, 58, 56, self.x, self.y)
+            self.image.clip_draw(340, 20, 58, 56, self.x - Project2D.camera, self.y)

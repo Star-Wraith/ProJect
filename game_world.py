@@ -1,6 +1,6 @@
 # layer 0 : Background Objects
 # layer 1 : Foreground Objects
-
+import Project2D
 objects = [[], [], []]
 
 collision_group = dict()

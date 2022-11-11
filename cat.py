@@ -51,6 +51,8 @@ class IDLE:
             else:
                 self.jump_flag = 0
 
+        self.y -= self.gravity
+
         pass
 
 
@@ -114,10 +116,13 @@ class RUN:
         #     self.frame = (self.frame + 1) % 2
         self.frame = (self.frame + FRAMES_PER_ACTION * ACTION_PER_TIME * game_framework.frame_time) % 2
         self.x += self.dir * RUN_SPEED_PPS * game_framework.frame_time
-        if self.x >= 400:
-            self.camera_x += 0.1
+        if self.x > 400 and self.camera_x <=8800:
+            Cat.camera_move(self)
+            # self.camera_x += RUN_SPEED_PPS * game_framework.frame_time
             # game_framework.camera = self.camera_x
             self.x = 400
+        if self.x < 10:
+            self.x = 10
         if self.jump_flag == 1:
             if self.y < self.jump + 200:
                 self.y += 1
@@ -128,6 +133,8 @@ class RUN:
                 self.y -= 1
             else:
                 self.jump_flag = 0
+
+        self.y -= self.gravity
 
             # while self.y <= self.jump + 150:
             #     self.y += 5
@@ -194,12 +201,17 @@ class Cat:
 
         self.jump_Sound = load_music('./SE/jump.mp3')
 
+        self.gravity = 1
+
 
 
 
         self.event_que = []
         self.cur_state = IDLE
         self.cur_state.enter(self, None)
+
+        # 죽음
+        self.death_pos = 0
 
 
 
@@ -223,8 +235,6 @@ class Cat:
 
     def draw(self):
         self.cur_state.draw(self)
-        debug_print('PPPP')
-        debug_print(f'Face Dir: {self.face_dir}, Dir: {self.dir}')
         draw_rectangle(*self.get_bb())
 
     def JUMP(self): # jump 이쪽으로 옮길 필요 있음
@@ -245,7 +255,36 @@ class Cat:
     def get_bb(self):
         return self.x - 20, self.y - 40, self.x + 20, self.y + 40
 
+    # def death_motion(self):
+    #     self.death_pos = self.y + 100
+    #     self.image.clip_draw(3 * 49, 1, 46, 70, self.x, self.y)
+    #     delay(0.5)
+    #     # while self.y <= self.death_pos:
+    #     #     self.y += RUN_SPEED_PPS * game_framework.frame_time
+    #     # while self.y >= -50:
+    #     #     self.y -= RUN_SPEED_PPS * game_framework.frame_time
+
+
     def handle_collision(self, other, group):
-        game_framework.change_state(death)
+        # Cat.death_motion(self)
+        print(group)
+        if group == 'cat:enemy':
+            game_framework.change_state(death)
+        elif group == 'cat:grass':
+            self.x -= 10
+        pass
+
+    def handle_collision2(self, other, group):
+        # Cat.death_motion(self)
+
+        self.gravity = 0
 
         pass
+
+
+    def camera_move(self):
+        if self.x > 400:
+            if self.camera_x <= 8800:
+                self.camera_x += 20 * RUN_SPEED_PPS * game_framework.frame_time
+                # print(self.camera_x)
+        return self.camera_x

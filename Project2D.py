@@ -2,7 +2,7 @@ import pico2d
 from pico2d import *
 import game_framework
 import game_world
-
+import read_map
 import title
 import PAUSE
 # 배경
@@ -55,6 +55,8 @@ enemy = None
 enemy_turtle = None
 enemy_air = None
 stage_bgm = None
+
+camera = None
 def enter():
     global cat, grass, running, screen, rocket, enemy, enemy_turtle, enemy_air, stage_bgm
 
@@ -68,7 +70,8 @@ def enter():
     enemy = Enemy_normal(500, 104)
     enemy_turtle = Enemy_turtle(300, 118)
     enemy_air = Enemy_air(750, 300)
-    grass = Grass()
+    read_map.map_read()
+    grass = read_map.map_mapping
     screen = Screen()
     # 2는 플레이어
     game_world.add_object(cat, 2)
@@ -77,11 +80,12 @@ def enter():
     game_world.add_object(enemy, 1)
     game_world.add_object(enemy_turtle, 1)
     game_world.add_object(enemy_air, 1)
-    game_world.add_object(grass, 1)
+    game_world.add_objects(grass, 1)
     # 배경 0
     game_world.add_object(screen, 0)
 
     game_world.add_collision_group(cat, enemy, 'cat:enemy')
+    game_world.add_collision_group(cat, grass, 'cat:grass')
 
 
 
@@ -91,13 +95,18 @@ def exit():
     game_world.clear()
 
 def update():
+    global camera, cat, grass
+    camera = cat.camera_move()
     for game_object in game_world.all_objects():
         game_object.update()
     for a, b, group in game_world.all_collision_pairs():
-        if collide(a, b):
+        if collide(a, b) == 1:
             print('COLLISION by ', group)
             b.handle_collision(a, group)
             a.handle_collision(b, group)
+        if collide(a, b) == 2:
+            b.handle_collision2(a, group)
+            a.handle_collision2(b, group)
 def draw_world():
     for game_object in game_world.all_objects():
         game_object.draw()
@@ -123,8 +132,16 @@ def collide(a, b):
     if ta < bb: return False
     if ba > tb: return False
 
+    if b == enemy:
+        return True
+    if a.y > b.y:
+        return 2
 
     return True
+
+
+
+
 
 
 def test_self():
