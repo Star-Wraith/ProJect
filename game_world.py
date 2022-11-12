@@ -3,7 +3,9 @@
 import Project2D
 objects = [[], [], []]
 
+
 collision_group = dict()
+collision_group.clear()
 
 def game_world_clear():
     global objects, collision_group

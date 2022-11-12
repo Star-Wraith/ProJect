@@ -11,12 +11,12 @@ from screen import Screen
 # 플레이어(냥이)
 from cat import Cat
 # 적들
-from enemy1 import Enemy_roket
-from enemy1 import Enemy_normal
-from enemy1 import Enemy_turtle
-from enemy1 import Enemy_air
+from enemy import Enemy_roket
+from enemy import Enemy_normal
+from enemy import Enemy_turtle
+from enemy import Enemy_air
 
-
+from enemy import Enemy_BOMB
 
 
 
@@ -43,49 +43,102 @@ def handle_events():
 # count = 0
 # # List Compreshension
 
-# open_canvas()
+# open_canvas()ddddddd
 screen = None
 # dir = 0
-grass = None  # 잔디 객체를 생성
+grass = list()  # 잔디 객체를 생성
 cat = None
 count = 0
 running = True
-rocket = None
-enemy = None
-enemy_turtle = None
-enemy_air = None
+rocket = list()
+enemy = list()
+enemy_turtle = list()
+enemy_air = list()
 stage_bgm = None
-
 camera = None
+BOMB = list()
+Bye_bgm = None
 def enter():
-    global cat, grass, running, screen, rocket, enemy, enemy_turtle, enemy_air, stage_bgm
+    global cat, grass, running, screen, rocket, enemy, enemy_turtle, enemy_air, stage_bgm, BOMB, Bye_bgm
 
+
+    # clear
+    enemy.clear()
+    rocket.clear()
+    enemy_turtle.clear()
+    enemy_air.clear()
+    grass.clear()
+    BOMB.clear()
+    Bye_bgm = load_music('./SE/Song.mp3')
 
     stage_bgm = load_music('./BGM/field.mp3')
     stage_bgm.set_volume(60)
     stage_bgm.repeat_play()
     # ------------ 시작 브금 ------------------
     cat = Cat()
-    rocket = Enemy_roket(300, 400)
-    enemy = Enemy_normal(500, 104)
-    enemy_turtle = Enemy_turtle(300, 118)
-    enemy_air = Enemy_air(750, 300)
+
+    # enemy_air = Enemy_air(750, 300)
     read_map.map_read()
     grass = read_map.map_mapping
+
+    # # clear
+    # enemy.clear()
+    # rocket.clear()
+    # enemy_turtle.clear()
+    # enemy_air.clear()
+
+
+    # enemy
+    # enemy = Enemy_normal(500, 104)
+    enemy.append(Enemy_normal(500, 104))
+    enemy.append(Enemy_normal(1300, 104))
+    enemy.append(Enemy_normal(7980, 700, 7400))
+    enemy.append(Enemy_normal(8100, 104))
+
+    # rocket
+    rocket.append(Enemy_roket(1960, 900, 1440))
+    rocket.append(Enemy_roket(4000, 900, 3480))
+    rocket.append(Enemy_roket(5040, 900, 4520))
+    rocket.append(Enemy_roket(5120, 900, 4600))
+    rocket.append(Enemy_roket(9200, 900, 8680))
+    rocket.append(Enemy_roket(9300, 900, 8800))
+    rocket.append(Enemy_roket(9360, 900, 8800))
+    rocket.append(Enemy_roket(9420, 900, 8800))
+    rocket.append(Enemy_roket(9480, 900, 8800))
+    rocket.append(Enemy_roket(9540, 900, 8800))
+
+    # Enemy_turtle
+    enemy_turtle.append(Enemy_turtle(4840, 118))
+    enemy_turtle.append(Enemy_turtle(4960, 118))
+    enemy_turtle.append(Enemy_turtle(8140, 118))
+
+    # Enemy_air
+    enemy_air.append(Enemy_air(7300, 300, 6500))
+
     screen = Screen()
     # 2는 플레이어
     game_world.add_object(cat, 2)
+
     # 적이랑 블럭은 1
-    game_world.add_object(rocket, 1)
-    game_world.add_object(enemy, 1)
-    game_world.add_object(enemy_turtle, 1)
-    game_world.add_object(enemy_air, 1)
+
     game_world.add_objects(grass, 1)
-    # 배경 0
+    game_world.add_objects(enemy_air, 1)
+    game_world.add_objects(rocket, 1)
+    game_world.add_objects(enemy, 1)
+    game_world.add_objects(enemy_turtle, 1)
+    game_world.add_objects(BOMB, 1)
+    # 배경
     game_world.add_object(screen, 0)
 
     game_world.add_collision_group(cat, enemy, 'cat:enemy')
+    game_world.add_collision_group(cat, rocket, 'cat:rocket')
+    game_world.add_collision_group(cat, enemy_turtle, 'cat:turtle')
+    game_world.add_collision_group(cat, enemy_air, 'cat:air')
     game_world.add_collision_group(cat, grass, 'cat:grass')
+    game_world.add_collision_group(cat, BOMB, 'cat:BOMB')
+    game_world.add_collision_group(enemy, grass, 'enemy:grass')
+
+
 
 
 
@@ -99,6 +152,7 @@ def update():
     camera = cat.camera_move()
     for game_object in game_world.all_objects():
         game_object.update()
+
     for a, b, group in game_world.all_collision_pairs():
         if collide(a, b) == 1:
             print('COLLISION by ', group)
@@ -131,9 +185,39 @@ def collide(a, b):
     if ra < lb: return False
     if ta < bb: return False
     if ba > tb: return False
+    # 일반 적
+    # if b == enemy[0] or b == enemy[1] or b == enemy[2]:
+    #     print('됐어!')
+    #     return True
+    for i in range(len(enemy)):
+        if b == enemy[i] and ba <= tb + 2 and ba > tb - 10:
+            return 2
+        elif b == enemy[i]:
+            print('됐어!')
+            return True
+        # if b == enemy[i]:
+        #     print('됐어!')
+        #     return True
 
-    if b == enemy:
-        return True
+    # 로켓 적
+    for i in range(len(rocket)):
+        if b == rocket[i]:
+            print('됐어!')
+            return True
+
+    # 터틀 적
+    for i in range(len(enemy_turtle)):
+        if b == enemy_turtle[i] and ba <= tb + 2 and ba > tb - 10:
+            return 2
+        elif b == enemy_turtle[i]:
+            print('됐어!')
+            return True
+    # air 적
+    for i in range(len(enemy_air)):
+        if b == enemy_air[i]:
+            print('됐어!')
+            return True
+
     if a.y > b.y:
         return 2
 

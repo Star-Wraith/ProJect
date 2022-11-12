@@ -1,6 +1,16 @@
 from pico2d import *
 from Project2D import *
 import Project2D
+import enemy
+import death
+import time
+
+def TTime():
+    time_second = time.time() + 10
+    while True:
+        if time.time() > time_second:
+            break
+
 #1 일반 블럭
 class Grass:
     def __init__(self, x, y):  # 생성자
@@ -265,6 +275,7 @@ class SWITCH:
         self.image = load_image('./res/switch.png')
         self.x = x + 20
         self.y = y + 40
+        self.COUNT = 0
     def draw(self):
         self.image.clip_draw(0, 0, 80, 80, self.x - Project2D.camera, self.y)
         draw_rectangle(*self.get_bb())
@@ -275,9 +286,34 @@ class SWITCH:
     def get_bb(self):
         return self.x - 40 - Project2D.camera, self.y - 40, self.x + 40 - Project2D.camera, self.y + 40
     def handle_collision(self, other, group):
+        if self.COUNT == 0:
+            game_world.remove_object(self)
+
+            Project2D.Bye_bgm.set_volume(60)
+            Project2D.Bye_bgm.repeat_play()
+
+            Project2D.BOMB.append(enemy.Enemy_BOMB(6800, 800))
+            game_world.add_objects(Project2D.BOMB, 2)
+
+            Project2D.BOMB.append(enemy.Enemy_BOMB(6000, 800))
+            game_world.add_objects(Project2D.BOMB, 2)
+            self.COUNT += 1
+
+
         pass
     def handle_collision2(self, other, group):
+        if self.COUNT == 0:
+            game_world.remove_object(self)
 
+            Project2D.Bye_bgm.set_volume(60)
+            Project2D.Bye_bgm.repeat_play()
+
+            Project2D.BOMB.append(enemy.Enemy_BOMB(6800, 800))
+            game_world.add_objects(Project2D.BOMB, 2)
+
+            Project2D.BOMB.append(enemy.Enemy_BOMB(6000, 800))
+            game_world.add_objects(Project2D.BOMB, 2)
+            self.COUNT += 1
         pass
 
 
@@ -361,6 +397,29 @@ class Clear_Door:
 
     def get_bb(self):
         return 0, 0, 0, 0
+    def handle_collision(self, other, group):
+        pass
+    def handle_collision2(self, other, group):
+
+        pass
+
+#99 투명 블럭
+class Block_UP:
+    def __init__(self, x, y):  # 생성자
+        self.image = load_image('./res/blockqm.PNG')
+        self.x = x + 20
+        self.y = y + 20
+    def draw(self):
+
+        self.image.clip_draw(0, 0, 40, 40, self.x - Project2D.camera, self.y)
+        draw_rectangle(*self.get_bb())
+
+
+    def update(self):
+        pass
+
+    def get_bb(self):
+        return self.x - 20 - Project2D.camera, self.y - 20, self.x + 20 - Project2D.camera, self.y + 20
     def handle_collision(self, other, group):
         pass
     def handle_collision2(self, other, group):

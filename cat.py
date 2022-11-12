@@ -24,15 +24,15 @@ class IDLE:
         print('ENTER IDLE')
         self.dir = 0
         self.timer = 1000
-        # if event == JUMP:
-        #     self.jump_flag = 1
-        #     self.jump = self.y
+        if event == JUMP:
+            self.jump_flag = 1
+            self.jump = self.y
 
 
     @staticmethod
     def exit(self, event):
         print('EXIT IDLE')
-
+        self.gravity = 2 * RUN_SPEED_PPS * game_framework.frame_time
 
     @staticmethod
     def do(self):
@@ -41,7 +41,7 @@ class IDLE:
         # if self.timer == 0:
         #     self.add_event(TIMER)
         if self.jump_flag == 1:
-            if self.y < self.jump + 200:
+            if self.y < self.jump + 400:
                 self.y += 1
             else:
                 self.jump_flag = 2
@@ -107,6 +107,7 @@ class RUN:
     def exit(self, event):
         print('EXIT RUN')
         self.face_dir = self.dir
+        self.gravity = 2 * RUN_SPEED_PPS * game_framework.frame_time
 
 
 
@@ -116,7 +117,7 @@ class RUN:
         #     self.frame = (self.frame + 1) % 2
         self.frame = (self.frame + FRAMES_PER_ACTION * ACTION_PER_TIME * game_framework.frame_time) % 2
         self.x += self.dir * RUN_SPEED_PPS * game_framework.frame_time
-        if self.x > 400 and self.camera_x <=8800:
+        if self.x > 400 and self.camera_x <= 8800:
             Cat.camera_move(self)
             # self.camera_x += RUN_SPEED_PPS * game_framework.frame_time
             # game_framework.camera = self.camera_x
@@ -136,16 +137,11 @@ class RUN:
 
         self.y -= self.gravity
 
-            # while self.y <= self.jump + 150:
-            #     self.y += 5
-            # while self.y >= self.jump:
-            #     self.y -= 5
 
-        # print(self.camera_x)
-
-        # self.frame = (self.frame + 1) % 2
-        self.x += self.dir
-        self.x = clamp(0, self.x, 800)
+        # self.x += self.dir
+        # self.x = clamp(0, self.x, 800)
+        # if self.gravity == 0 and self.jump_flag == 0:
+        #     self.gravity = 2 * RUN_SPEED_PPS * game_framework.frame_time
         pass
 
     def draw(self):
@@ -178,7 +174,7 @@ FRAMES_PER_ACTION = 2
 
 
 PIXEL_PER_METER = (10.0 / 0.3) # 10 pixel 30 cm
-RUN_SPEED_KMPH = 5.0 # Km / Hour
+RUN_SPEED_KMPH = 30 # Km / Hour
 RUN_SPEED_MPM = (RUN_SPEED_KMPH * 1000.0 / 60.0)
 RUN_SPEED_MPS = (RUN_SPEED_MPM / 60.0)
 RUN_SPEED_PPS = (RUN_SPEED_MPS * PIXEL_PER_METER)
@@ -201,8 +197,8 @@ class Cat:
 
         self.jump_Sound = load_music('./SE/jump.mp3')
 
-        self.gravity = 1
-
+        self.jump_state = 0
+        self.gravity = 0
 
 
 
@@ -238,6 +234,19 @@ class Cat:
         draw_rectangle(*self.get_bb())
 
     def JUMP(self): # jump 이쪽으로 옮길 필요 있음
+
+
+        # if self.jump_flag == 1:
+        #     if self.y < self.jump + 200:
+        #         self.y += 1
+        #     else:
+        #         self.jump_flag = 2
+        # if self.jump_flag == 2:
+        #     if self.y > self.jump:
+        #         self.y -= 1
+        #     else:
+        #         self.jump_flag = 0
+
         pass
 
 
@@ -270,14 +279,50 @@ class Cat:
         print(group)
         if group == 'cat:enemy':
             game_framework.change_state(death)
-        elif group == 'cat:grass':
-            self.x -= 10
+        elif group == 'cat:rocket':
+            game_framework.change_state(death)
+        elif group == 'cat:turtle':
+            game_framework.change_state(death)
+        elif group == 'cat:air':
+            game_framework.change_state(death)
+        elif group == 'cat:BOMB':
+            game_framework.change_state(death)
+        elif group == 'cat:grass': # 고쳐야한다 각 grass마다 크기가 달라서
+            if self.x + 20 < other.x - Project2D.camera:
+                self.x -= 2
+            elif self.x - 20 > other.x - Project2D.camera:
+                self.x += 2
+            if self.y + 20 < other.y:
+                self.y -= 2
+            elif self.y - 20 > other.y:
+                self.y += 2
+            # if self.x + other.get_bb()[0] - other.x + Project2D.camera + 10 < other.x - Project2D.camera:
+            #     self.x -= 2
+            # elif self.x - other.get_bb()[2] - other.x + Project2D.camera - 10 > other.x - Project2D.camera:
+            #     self.x += 2
+            # if self.y + other.get_bb()[1] - other.y < other.y:
+            #     self.y -= 2
+            # elif self.y + other.get_bb()[3] - other.y > other.y:
+            #     self.y += 2
         pass
 
     def handle_collision2(self, other, group):
         # Cat.death_motion(self)
+        if group == 'cat:enemy':
+            self.y += 50
 
-        self.gravity = 0
+        if group == 'cat:turtle':
+            self.y += 50
+        if group == 'cat:grass':
+            self.gravity = 0
+
+        if group == 'cat:rocket':
+            game_framework.change_state(death)
+        if group == 'cat:air':
+            game_framework.change_state(death)
+
+        if group == 'cat:BOMB':
+            game_framework.change_state(death)
 
         pass
 
@@ -285,6 +330,12 @@ class Cat:
     def camera_move(self):
         if self.x > 400:
             if self.camera_x <= 8800:
-                self.camera_x += 20 * RUN_SPEED_PPS * game_framework.frame_time
+                # self.camera_x += 20 * RUN_SPEED_PPS * game_framework.frame_time
+                self.camera_x += 1 * RUN_SPEED_PPS * game_framework.frame_time
                 # print(self.camera_x)
         return self.camera_x
+
+# 해야 될 것
+# 적들 위치 선정 (완)
+# 점프 고치기 (실패)
+# 각종 상호작용들 (아주 약간)

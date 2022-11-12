@@ -68,7 +68,7 @@ def map_read():
                 map_mapping.append(i)
                 # map_mapping.append = grass.Block_Drop(Pos_x, Pos_y)
 
-            elif map_choice[y][x] == 42:
+            elif map_choice[y][x] == 44:
                 i = grass.Block_PM(Pos_x, Pos_y)
                 map_mapping.append(i)
                 # map_mapping.append = grass.Block_Drop(Pos_x, Pos_y)
@@ -100,6 +100,11 @@ def map_read():
 
             elif map_choice[y][x] == 56:
                 i = grass.Clear_Door(Pos_x, Pos_y)
+                map_mapping.append(i)
+                # map_mapping.append = grass.Clear_Door(Pos_x, Pos_y)
+
+            elif map_choice[y][x] == 99:
+                i = grass.Block_UP(Pos_x, Pos_y)
                 map_mapping.append(i)
                 # map_mapping.append = grass.Clear_Door(Pos_x, Pos_y)
 
