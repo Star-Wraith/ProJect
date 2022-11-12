@@ -7,12 +7,13 @@ image = None
 font = None
 DEATH = 3 # 죽은 횟수
 def enter():
-    global image, DEATH, font
+    global image, DEATH, font, SE
     DEATH -= 1
     if DEATH < -99:
         DEATH = -99
     image = load_image('./res/death.png')
     font = load_font('./res/ENCR10B.TTF', 40)
+
 
     pass
 

@@ -278,12 +278,20 @@ class Cat:
         # Cat.death_motion(self)
         print(group)
         if group == 'cat:enemy':
+            Project2D.DEATH_SE.set_volume(60)
+            Project2D.DEATH_SE.play()
             game_framework.change_state(death)
         elif group == 'cat:rocket':
+            Project2D.DEATH_SE.set_volume(60)
+            Project2D.DEATH_SE.play()
             game_framework.change_state(death)
         elif group == 'cat:turtle':
+            Project2D.DEATH_SE.set_volume(60)
+            Project2D.DEATH_SE.play()
             game_framework.change_state(death)
         elif group == 'cat:air':
+            Project2D.DEATH_SE.set_volume(60)
+            Project2D.DEATH_SE.play()
             game_framework.change_state(death)
         elif group == 'cat:BOMB':
             game_framework.change_state(death)
@@ -310,9 +318,13 @@ class Cat:
         # Cat.death_motion(self)
         if group == 'cat:enemy':
             self.y += 50
+            Project2D.tok_se.set_volume(60)
+            Project2D.tok_se.play()
 
         if group == 'cat:turtle':
             self.y += 50
+            Project2D.tok_se.set_volume(60)
+            Project2D.tok_se.play()
         if group == 'cat:grass':
             self.gravity = 0
 

@@ -58,8 +58,10 @@ stage_bgm = None
 camera = None
 BOMB = list()
 Bye_bgm = None
+tok_se = None
+DEATH_SE = None
 def enter():
-    global cat, grass, running, screen, rocket, enemy, enemy_turtle, enemy_air, stage_bgm, BOMB, Bye_bgm
+    global cat, grass, running, screen, rocket, enemy, enemy_turtle, enemy_air, stage_bgm, BOMB, Bye_bgm, tok_se, DEATH_SE
 
 
     # clear
@@ -70,6 +72,9 @@ def enter():
     grass.clear()
     BOMB.clear()
     Bye_bgm = load_music('./SE/Song.mp3')
+    tok_se = load_music('./SE/koura.mp3')
+    DEATH_SE = load_music('./SE/death.mp3')
+
 
     stage_bgm = load_music('./BGM/field.mp3')
     stage_bgm.set_volume(60)

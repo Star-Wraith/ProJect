@@ -39,6 +39,10 @@ class Enemy_roket:
         self.dir = -1
         self.count = 0
         self.xPos = xPos
+        self.Sound = load_music('./SE/kirra.mp3')
+        self.Sound.set_volume(60)
+        self.One = True
+
 
 
     def update(self):
@@ -50,6 +54,9 @@ class Enemy_roket:
         # self.y += self.dir * SPEED_ROKET_PPS * game_framework.frame_time
         if self.xPos <= Project2D.camera:
             # self.dir = -1
+            if self.One == True:
+                self.Sound.play()
+                self.One = False
             self.y += self.dir * SPEED_ROKET_PPS * game_framework.frame_time
         # 화면 벗어나면 지우기
         if self.x - Project2D.camera < -20 or self.y < -20:
@@ -81,6 +88,7 @@ class Enemy_BOMB: # 수정 필요?
         self.y_first = self.y
         self.dir = -1
         self.TIME = 0
+        self.One = True
 
     def update(self):
 
