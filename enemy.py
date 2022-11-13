@@ -246,7 +246,7 @@ class Enemy_turtle:
         if group == 'cat:turtle' and self.dir == 0:
             self.dir = 3
         if group == 'cat:turtle' and self.dir != 3:
-            self.y -= 12
+            self.y -= 9
             self.dir = 0
             pass
 
