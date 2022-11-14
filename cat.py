@@ -25,14 +25,17 @@ class IDLE:
         self.dir = 0
         self.timer = 1000
         if event == JUMP:
-            self.jump_flag = 1
-            self.jump = self.y
+            # self.jump_flag = 1
+            # self.jump = self.y
+            self.jump_state = True
+            self.jump_s = 100
+            self.gravity = RUN_SPEED_PPS * game_framework.frame_time
 
 
     @staticmethod
     def exit(self, event):
         print('EXIT IDLE')
-        self.gravity = 2 * RUN_SPEED_PPS * game_framework.frame_time
+        self.gravity = RUN_SPEED_PPS * game_framework.frame_time
 
     @staticmethod
     def do(self):
@@ -40,16 +43,19 @@ class IDLE:
         # self.timer -= 1
         # if self.timer == 0:
         #     self.add_event(TIMER)
-        if self.jump_flag == 1:
-            if self.y < self.jump + 400:
-                self.y += 1
-            else:
-                self.jump_flag = 2
-        if self.jump_flag == 2:
-            if self.y > self.jump:
-                self.y -= 1
-            else:
-                self.jump_flag = 0
+
+        if self.jump_state == True:
+            Cat.JUMP(self)
+        # if self.jump_flag == 1:
+        #     if self.y < self.jump + 400:
+        #         self.y += 1
+        #     else:
+        #         self.jump_flag = 2
+        # if self.jump_flag == 2:
+        #     if self.y > self.jump:
+        #         self.y -= 1
+        #     else:
+        #         self.jump_flag = 0
 
         self.y -= self.gravity
 
@@ -59,27 +65,31 @@ class IDLE:
 
     @staticmethod
     def draw(self):
-
         # if self.face_dir == 1:
-        #     self.image.clip_draw(49, 1, 46, 70, self.x, self.y)
+        #     if self.jump_flag == 1 or self.jump_flag == 2:
+        #         self.image.clip_draw(2 * 49, 1, 46, 70, self.x, self.y)
+        #     else:
+        #         self.image.clip_draw(49, 1, 46, 70, self.x, self.y)
         #
         # else:
-        #     self.image2.clip_draw(186 - 46, 1, 46, 70, self.x, self.y)
+        #     if self.jump_flag == 1 or self.jump_flag == 2:
+        #         self.image2.clip_draw(186 - 46 * 2, 1, 46, 70, self.x, self.y)
+        #     else:
+        #         self.image2.clip_draw(186 - 46, 1, 46, 70, self.x, self.y)
+
         if self.face_dir == 1:
-            if self.jump_flag == 1 or self.jump_flag == 2:
+            if self.jump_state == True:
                 self.image.clip_draw(2 * 49, 1, 46, 70, self.x, self.y)
             else:
                 self.image.clip_draw(49, 1, 46, 70, self.x, self.y)
 
         else:
-            if self.jump_flag == 1 or self.jump_flag == 2:
+            if self.jump_state == True:
                 self.image2.clip_draw(186 - 46 * 2, 1, 46, 70, self.x, self.y)
             else:
                 self.image2.clip_draw(186 - 46, 1, 46, 70, self.x, self.y)
 
 
-        # else:
-        #     self.image.clip_draw(self.frame * 46, 1, 46, 70, self.x, self.y)
         pass
 
 class RUN:
@@ -96,10 +106,12 @@ class RUN:
         elif event == JUMP:
             self.jump_Sound.set_volume(60)
             self.jump_Sound.play()
-
-
-            self.jump_flag = 1
-            self.jump = self.y
+            #
+            #
+            # self.jump_flag = 1
+            # self.jump = self.y
+            self.jump_s = 100
+            self.jump_state = True
 
 
 
@@ -107,15 +119,26 @@ class RUN:
     def exit(self, event):
         print('EXIT RUN')
         self.face_dir = self.dir
-        self.gravity = 2 * RUN_SPEED_PPS * game_framework.frame_time
+        self.gravity = RUN_SPEED_PPS * game_framework.frame_time
+
+
+
+        # self.move_time = 3
+        # self.move_delay = 1
 
 
 
     def do(self):
-        # self.move_delay += 1
-        # if self.move_delay % 50 == 0:
-        #     self.frame = (self.frame + 1) % 2
+
         self.frame = (self.frame + FRAMES_PER_ACTION * ACTION_PER_TIME * game_framework.frame_time) % 2
+
+        # self.move_delay += 1
+        # if self.move_delay % 10 == 0 and self.move_time > 1:
+        #     self.move_time -= 1
+
+
+
+        # self.x += self.dir * RUN_SPEED_PPS * game_framework.frame_time/self.move_time
         self.x += self.dir * RUN_SPEED_PPS * game_framework.frame_time
         if self.x > 400 and self.camera_x <= 8800:
             Cat.camera_move(self)
@@ -124,16 +147,20 @@ class RUN:
             self.x = 400
         if self.x < 10:
             self.x = 10
-        if self.jump_flag == 1:
-            if self.y < self.jump + 200:
-                self.y += 1
-            else:
-                self.jump_flag = 2
-        if self.jump_flag == 2:
-            if self.y > self.jump:
-                self.y -= 1
-            else:
-                self.jump_flag = 0
+
+        if self.jump_state == True:
+            Cat.JUMP(self)
+        #
+        # if self.jump_flag == 1:
+        #     if self.y < self.jump + 200:
+        #         self.y += 1
+        #     else:
+        #         self.jump_flag = 2
+        # if self.jump_flag == 2:
+        #     if self.y > self.jump:
+        #         self.y -= 1
+        #     else:
+        #         self.jump_flag = 0
 
         self.y -= self.gravity
 
@@ -145,17 +172,31 @@ class RUN:
         pass
 
     def draw(self):
+    #     if self.dir == 1:
+    #         if self.jump_flag == 1 or self.jump_flag == 2:
+    #             self.image.clip_draw(2 * 49, 1, 46, 70, self.x, self.y)
+    #         else:
+    #             self.image.clip_draw(int(self.frame) * 49, 1, 46, 70, self.x, self.y)
+    #
+    #     elif self.dir == -1:
+    #         if self.jump_flag == 1 or self.jump_flag == 2:
+    #             self.image2.clip_draw(186 - 46 * 2, 1, 46, 70, self.x, self.y)
+    #         else:
+    #             self.image2.clip_draw(186 - 46 * int(self.frame), 1, 46, 70, self.x, self.y)
+
         if self.dir == 1:
-            if self.jump_flag == 1 or self.jump_flag == 2:
+            if self.jump_state == True:
                 self.image.clip_draw(2 * 49, 1, 46, 70, self.x, self.y)
             else:
                 self.image.clip_draw(int(self.frame) * 49, 1, 46, 70, self.x, self.y)
 
         elif self.dir == -1:
-            if self.jump_flag == 1 or self.jump_flag == 2:
+            if  self.jump_state == True:
                 self.image2.clip_draw(186 - 46 * 2, 1, 46, 70, self.x, self.y)
             else:
                 self.image2.clip_draw(186 - 46 * int(self.frame), 1, 46, 70, self.x, self.y)
+
+
         pass
 
 
@@ -190,15 +231,19 @@ class Cat:
         self.frame = 0
         self.face_dir = 1
         self.dir = 0
-        self.move_delay = 0
         self.camera_x = 0 # 카메라 구현 대기중
+        # self.move_time = 3
+        # self.move_delay = 1
+
         self.jump = 0
         self.jump_flag = 0
 
         self.jump_Sound = load_music('./SE/jump.mp3')
 
-        self.jump_state = 0
-        self.gravity = 0
+        self.jump_state = False
+        self.gravity = 2 * RUN_SPEED_PPS * game_framework.frame_time
+        self.jump_s = 100
+        self.jump_count = 0
 
 
 
@@ -234,6 +279,19 @@ class Cat:
         draw_rectangle(*self.get_bb())
 
     def JUMP(self): # jump 이쪽으로 옮길 필요 있음
+        if self.jump_s > 0:
+            self.y += self.jump_s * RUN_SPEED_PPS * game_framework.frame_time/100
+            self.jump_s -= RUN_SPEED_PPS * game_framework.frame_time/5
+        elif self.jump_s <= 0:
+            if self.jump_count == 0:
+                self.gravity = RUN_SPEED_PPS * game_framework.frame_time
+                self.jump_count += 1
+            else:
+                if self.gravity == 0:
+                    self.jump_state = False
+                    self.jump_count = 0
+
+
 
 
         # if self.jump_flag == 1:
