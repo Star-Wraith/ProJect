@@ -10,6 +10,17 @@ def TTime():
     while True:
         if time.time() > time_second:
             break
+TIME_PER_ACTION = 0.5
+ACTION_PER_TIME = 1.0 / TIME_PER_ACTION
+FRAMES_PER_ACTION = 2
+
+
+PIXEL_PER_METER = (10.0 / 0.3) # 10 pixel 30 cm
+RUN_SPEED_KMPH = 30 # Km / Hour
+RUN_SPEED_MPM = (RUN_SPEED_KMPH * 1000.0 / 60.0)
+RUN_SPEED_MPS = (RUN_SPEED_MPM / 60.0)
+RUN_SPEED_PPS = (RUN_SPEED_MPS * PIXEL_PER_METER)
+
 
 #1 일반 블럭
 class Grass:
@@ -17,6 +28,9 @@ class Grass:
         self.image = load_image('./res/brocknormal.PNG')
         self.x = x + 20
         self.y = y + 20
+
+        # 충돌 넘버
+        self.crash_number = 1
 
 
     def draw(self):
@@ -40,6 +54,9 @@ class Block_QM:
         self.image = load_image('./res/blockqm.PNG')
         self.x = x + 20
         self.y = y + 20
+
+        # 충돌 넘버
+        self.crash_number = 2
     def draw(self):
         self.image.clip_draw(0, 0, 40, 40, self.x - Project2D.camera, self.y)
         draw_rectangle(*self.get_bb())
@@ -61,6 +78,9 @@ class Block_Shadow:
         self.image = load_image('./res/blockqm.PNG')
         self.x = x + 20
         self.y = y + 20
+
+        # 충돌 넘버
+        self.crash_number = 3
     def draw(self):
 
         self.image.clip_draw(0, 0, 40, 40, self.x - Project2D.camera, self.y)
@@ -83,6 +103,9 @@ class Mountain:
         self.image = load_image('./res/haikei.PNG')
         self.x = x + 20
         self.y = y + 91
+
+        # 충돌 넘버
+        self.crash_number = 4
     def draw(self):
         self.image.clip_draw(0, 314, 298, 182, self.x - Project2D.camera, self.y)
         draw_rectangle(*self.get_bb())
@@ -104,6 +127,9 @@ class Cloud:
         self.image = load_image('./res/haikei.PNG')
         self.x = x + 20
         self.y = y + 20
+
+        # 충돌 넘버
+        self.crash_number = 5
     def draw(self):
         self.image.clip_draw(303, 354, 138, 80, self.x - Project2D.camera, self.y)
         draw_rectangle(*self.get_bb())
@@ -126,6 +152,9 @@ class Cloudsmall:
         self.image = load_image('./res/haikei.PNG')
         self.x = x + 20
         self.y = y + 20
+
+        # 충돌 넘버
+        self.crash_number = 6
     def draw(self):
         self.image.clip_draw(302, 212, 101, 58, self.x - Project2D.camera, self.y)
         draw_rectangle(*self.get_bb())
@@ -147,6 +176,9 @@ class Flag:
         self.image = load_image('./res/haikei.PNG')
         self.x = x + 20
         self.y = y + 62
+
+        # 충돌 넘버
+        self.crash_number = 7
     def draw(self):
         self.image.clip_draw(0, 6, 67, 124, self.x - Project2D.camera, self.y)
         draw_rectangle(*self.get_bb())
@@ -166,6 +198,9 @@ class JUMP_Bar:
         self.image = load_image('./res/item.PNG')
         self.x = x + 20
         self.y = y + 24
+
+        # 충돌 넘버
+        self.crash_number = 8
     def draw(self):
         self.image.clip_draw(357, 8, 47, 49, self.x - Project2D.camera, self.y)
         draw_rectangle(*self.get_bb())
@@ -178,6 +213,8 @@ class JUMP_Bar:
     def handle_collision(self, other, group):
         pass
     def handle_collision2(self, other, group):
+        Project2D.cat.speed = 10
+
 
         pass
 
@@ -187,11 +224,16 @@ class Block_Drop:
         self.image = load_image('./res/dropblock.PNG')
         self.x = x + 20
         self.y = y + 40
+        self.speed = 0
+
+        # 충돌 넘버
+        self.crash_number = 9
     def draw(self):
         self.image.clip_draw(0, 0, 40, 80, self.x - Project2D.camera, self.y)
         draw_rectangle(*self.get_bb())
 
     def update(self):
+        self.y -= self.speed
         pass
 
     def get_bb(self):
@@ -199,6 +241,7 @@ class Block_Drop:
     def handle_collision(self, other, group):
         pass
     def handle_collision2(self, other, group):
+        self.speed = 2 * RUN_SPEED_PPS * game_framework.frame_time
 
         pass
 
@@ -208,6 +251,9 @@ class Block_RM:
         self.image = load_image('./res/blockqm.PNG')
         self.x = x + 20
         self.y = y + 20
+
+        # 충돌 넘버
+        self.crash_number = 21
     def draw(self):
         self.image.clip_draw(0, 0, 40, 40, self.x - Project2D.camera, self.y)
         draw_rectangle(*self.get_bb())
@@ -217,7 +263,7 @@ class Block_RM:
 
 
     def get_bb(self):
-        return self.x - 20, self.y - 20, self.x + 20, self.y + 20
+        return self.x - 20 - Project2D.camera, self.y - 20, self.x + 20 - Project2D.camera, self.y + 20
     def handle_collision(self, other, group):
         pass
     def handle_collision2(self, other, group):
@@ -230,6 +276,10 @@ class Block_PM:
         self.image = load_image('./res/blockqm.PNG')
         self.x = x + 20
         self.y = y + 20
+
+        # 충돌 넘버
+        self.crash_number = 42
+
     def draw(self):
         self.image.clip_draw(0, 0, 40, 40, self.x - Project2D.camera, self.y)
         draw_rectangle(*self.get_bb())
@@ -254,6 +304,9 @@ class TREE:
         self.image = load_image('./res/haikei.PNG')
         self.x = x + 20
         self.y = y + 58
+
+        # 충돌 넘버
+        self.crash_number = 88
     def draw(self):
         self.image.clip_draw(504, 373, 60, 121, self.x - Project2D.camera, self.y)
         draw_rectangle(*self.get_bb())
@@ -276,6 +329,9 @@ class SWITCH:
         self.x = x + 20
         self.y = y + 40
         self.COUNT = 0
+
+        # 충돌 넘버
+        self.crash_number = 10
     def draw(self):
         self.image.clip_draw(0, 0, 80, 80, self.x - Project2D.camera, self.y)
         draw_rectangle(*self.get_bb())
@@ -324,6 +380,9 @@ class Roof:
         self.image = load_image('./res/roof.png')
         self.x = x + 20
         self.y = y + 80
+
+        # 충돌 넘버
+        self.crash_number = 11
     def draw(self):
         self.image.clip_draw(0, 0, 120, 160, self.x - Project2D.camera, self.y)
         draw_rectangle(*self.get_bb())
@@ -345,6 +404,9 @@ class Leaf:
         self.image = load_image('./res/haikei.png')
         self.x = x + 20
         self.y = y + 20
+
+        # 충돌 넘버
+        self.crash_number = 33
     def draw(self):
         self.image.clip_draw(302, 436, 116, 62, self.x - Project2D.camera, self.y)
         draw_rectangle(*self.get_bb())
@@ -365,6 +427,9 @@ class Bong:
         self.image = load_image('./res/bong.png')
         self.x = x + 20
         self.y = y + 220
+
+        # 충돌 넘버
+        self.crash_number = 55
     def draw(self):
         self.image.clip_draw(0, 0, 40, 440, self.x - Project2D.camera, self.y)
         draw_rectangle(*self.get_bb())
@@ -388,6 +453,9 @@ class Clear_Door:
         self.image = load_image('./res/haikei.png')
         self.x = x + 20
         self.y = y + 90
+
+        # 충돌 넘버
+        self.crash_number = 56
     def draw(self):
         self.image.clip_draw(0, 133, 198, 180, self.x - Project2D.camera, self.y)
         draw_rectangle(*self.get_bb())
@@ -403,12 +471,16 @@ class Clear_Door:
 
         pass
 
-#99 투명 블럭
+#99 올라가는 블럭
 class Block_UP:
     def __init__(self, x, y):  # 생성자
         self.image = load_image('./res/blockqm.PNG')
         self.x = x + 20
         self.y = y + 20
+        self.speed = 0
+
+        # 충돌 넘버
+        self.crash_number = 99
     def draw(self):
 
         self.image.clip_draw(0, 0, 40, 40, self.x - Project2D.camera, self.y)
@@ -416,11 +488,16 @@ class Block_UP:
 
 
     def update(self):
+        self.y += self.speed
+        self.speed = 0
         pass
 
     def get_bb(self):
         return self.x - 20 - Project2D.camera, self.y - 20, self.x + 20 - Project2D.camera, self.y + 20
     def handle_collision(self, other, group):
+
+        self.speed = 100
+
         pass
     def handle_collision2(self, other, group):
 

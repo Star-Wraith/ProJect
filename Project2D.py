@@ -222,9 +222,84 @@ def collide(a, b):
         if b == enemy_air[i]:
             print('됐어!')
             return True
+    # 1 벽돌 블럭 충돌 처리
+    if b.crash_number == 1 and a.crash_number == 9999:
+        if a.y < b.y:
+            return True
+        elif a.y - 35 > b.y + 20:
+            return 2
+    # 2 ?블럭 충돌 처리
+    if b.crash_number == 2 and a.crash_number == 9999:
+        if a.y < b.y:
+            return True
+        elif a.y - 35 > b.y + 20:
+            return 2
+    # 3 투명 블럭 충돌 처리
+    if b.crash_number == 3 and a.crash_number == 9999:
+        if a.y < b.y:
+            return True
+        elif a.y - 35 > b.y + 20:
+            return 2
+    # 7 플래그 충돌 처리
+    # if b.crash_number == 7 and a.crash_number == 9999:
+    #     if a.y < b.y:
+    #         return True
+    #     elif a.y - 35 > b.y + 2:
+    #         return 2
+    # 8 점프대 충돌 처리
+    if b.crash_number == 8 and a.crash_number == 9999:
+        if a.y < b.y:
+            return True
+        elif a.y - 35 > b.y + 20:
+            return 2
+    # 9 떨어지는 블럭 충돌 처리
+    if b.crash_number == 9 and a.crash_number == 9999:
+        if a.y < b.y:
+            return True
+        elif a.y - 35 > b.y + 40:
+            return 2
 
-    if a.y > b.y:
-        return 2
+    # 21 빨간 버섯 ?블럭 충돌 처리
+    if b.crash_number == 21 and a.crash_number == 9999:
+        if a.y < b.y:
+            return True
+        elif a.y - 35 > b.y + 20:
+            return 2
+    # 42 독 버섯 ?블럭 충돌 처리
+    if b.crash_number == 42 and a.crash_number == 9999:
+        if a.y < b.y:
+            return True
+        elif a.y - 35 > b.y + 20:
+            return 2
+    # 11 굴뚝 충돌 처리
+    if b.crash_number == 11 and a.crash_number == 9999:
+        if a.y < b.y:
+            return True
+        elif a.y - 35 > b.y + 80:
+            return 2
+
+    # # 55 결승 봉 충돌 처리
+    # if b.crash_number == 11 and a.crash_number == 9999:
+    #     if a.y < b.y:
+    #         return True
+    #     elif a.y - 35 > b.y + 220:
+    #         return 2
+
+    # 99 올라가는 블럭 충돌 처리
+    if b.crash_number == 99 and a.crash_number == 9999:
+        if a.y < b.y:
+            return True
+        elif a.y - 35 > b.y + 20:
+            return 2
+
+
+
+    if a.crash_number == 0 and b.crash_number == 1:
+        if a.y < b.y:
+            return True
+        elif a.y - 38 > b.y:
+            return 2
+
 
     return True
 

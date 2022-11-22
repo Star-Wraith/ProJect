@@ -24,7 +24,7 @@ class IDLE:
         print('ENTER IDLE')
         self.dir = 0
         self.timer = 1000
-        if event == JUMP:
+        if event == JUMP and self.jump_state == False:
             # self.jump_flag = 1
             # self.jump = self.y
             self.jump_state = True
@@ -43,7 +43,6 @@ class IDLE:
         # self.timer -= 1
         # if self.timer == 0:
         #     self.add_event(TIMER)
-
         if self.jump_state == True:
             Cat.JUMP(self)
         # if self.jump_flag == 1:
@@ -103,7 +102,7 @@ class RUN:
             self.dir -= 1
         elif event == LU:
             self.dir += 1
-        elif event == JUMP:
+        elif event == JUMP and self.jump_state == False:
             self.jump_Sound.set_volume(60)
             self.jump_Sound.play()
             #
@@ -123,6 +122,7 @@ class RUN:
 
 
 
+
         # self.move_time = 3
         # self.move_delay = 1
 
@@ -131,11 +131,9 @@ class RUN:
     def do(self):
 
         self.frame = (self.frame + FRAMES_PER_ACTION * ACTION_PER_TIME * game_framework.frame_time) % 2
-
         # self.move_delay += 1
         # if self.move_delay % 10 == 0 and self.move_time > 1:
         #     self.move_time -= 1
-
 
 
         # self.x += self.dir * RUN_SPEED_PPS * game_framework.frame_time/self.move_time
@@ -150,6 +148,7 @@ class RUN:
 
         if self.jump_state == True:
             Cat.JUMP(self)
+
         #
         # if self.jump_flag == 1:
         #     if self.y < self.jump + 200:
@@ -163,6 +162,9 @@ class RUN:
         #         self.jump_flag = 0
 
         self.y -= self.gravity
+
+        if self.jump_state == False:
+            self.gravity = RUN_SPEED_PPS * game_framework.frame_time
 
 
         # self.x += self.dir
@@ -185,13 +187,13 @@ class RUN:
     #             self.image2.clip_draw(186 - 46 * int(self.frame), 1, 46, 70, self.x, self.y)
 
         if self.dir == 1:
-            if self.jump_state == True:
+            if self.jump_state == True or self.gravity != 0:
                 self.image.clip_draw(2 * 49, 1, 46, 70, self.x, self.y)
             else:
                 self.image.clip_draw(int(self.frame) * 49, 1, 46, 70, self.x, self.y)
 
         elif self.dir == -1:
-            if  self.jump_state == True:
+            if  self.jump_state == True or self.gravity != 0:
                 self.image2.clip_draw(186 - 46 * 2, 1, 46, 70, self.x, self.y)
             else:
                 self.image2.clip_draw(186 - 46 * int(self.frame), 1, 46, 70, self.x, self.y)
@@ -232,8 +234,12 @@ class Cat:
         self.face_dir = 1
         self.dir = 0
         self.camera_x = 0 # 카메라 구현 대기중
+        self.speed = 1
         # self.move_time = 3
         # self.move_delay = 1
+
+        # 충돌 넘버
+        self.crash_number = 9999
 
         self.jump = 0
         self.jump_flag = 0
@@ -280,11 +286,12 @@ class Cat:
 
     def JUMP(self): # jump 이쪽으로 옮길 필요 있음
         if self.jump_s > 0:
-            self.y += self.jump_s * RUN_SPEED_PPS * game_framework.frame_time/100
+            self.y += self.jump_s * self.speed * RUN_SPEED_PPS * game_framework.frame_time/100
             self.jump_s -= RUN_SPEED_PPS * game_framework.frame_time/5
+            self.gravity = 0
         elif self.jump_s <= 0:
             if self.jump_count == 0:
-                self.gravity = RUN_SPEED_PPS * game_framework.frame_time
+                self.gravity = self.speed * RUN_SPEED_PPS * game_framework.frame_time
                 self.jump_count += 1
             else:
                 if self.gravity == 0:
@@ -354,14 +361,18 @@ class Cat:
         elif group == 'cat:BOMB':
             game_framework.change_state(death)
         elif group == 'cat:grass': # 고쳐야한다 각 grass마다 크기가 달라서
+            # 대충 이런식으로 바꿔나갈듯 (하나 하나씩 바꿔나가면 될듯)
+            # if other.crash_number == 99:
+            #     other.y += 100
             if self.x + 20 < other.x - Project2D.camera:
-                self.x -= 2
+                self.x -= 5
             elif self.x - 20 > other.x - Project2D.camera:
-                self.x += 2
-            if self.y + 20 < other.y:
-                self.y -= 2
+                self.x += 5
+            elif self.y + 20 < other.y:
+                self.jump_s = 0
+                # self.y -= 2
             elif self.y - 20 > other.y:
-                self.y += 2
+                self.y += 3
             # if self.x + other.get_bb()[0] - other.x + Project2D.camera + 10 < other.x - Project2D.camera:
             #     self.x -= 2
             # elif self.x - other.get_bb()[2] - other.x + Project2D.camera - 10 > other.x - Project2D.camera:
@@ -385,6 +396,7 @@ class Cat:
             Project2D.tok_se.play()
         if group == 'cat:grass':
             self.gravity = 0
+
 
         if group == 'cat:rocket':
             game_framework.change_state(death)

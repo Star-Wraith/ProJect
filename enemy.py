@@ -43,6 +43,9 @@ class Enemy_roket:
         self.Sound.set_volume(60)
         self.One = True
 
+        # 충돌 넘버
+        self.crash_number = 0
+
 
 
     def update(self):
@@ -90,6 +93,9 @@ class Enemy_BOMB: # 수정 필요?
         self.TIME = 0
         self.One = True
 
+        # 충돌 넘버
+        self.crash_number = 0
+
     def update(self):
 
         if self.TIME >= 100:
@@ -99,7 +105,7 @@ class Enemy_BOMB: # 수정 필요?
         self.TIME += 1
         # 화면 벗어나면 지우기
         if self.y < -200:
-            game_world.remove_object(self)
+            # game_world.remove_object(self)
             print('지우기 성공')
     def draw(self):
         if self.dir == -1:
@@ -130,6 +136,9 @@ class Enemy_normal:
         self.x_max = self.x + 100
         self.gravity = 0
         self.xPos = xPos
+
+        # 충돌 넘버
+        self.crash_number = 0
 
     def update(self):
         # while self.y > 0:
@@ -190,6 +199,12 @@ class Enemy_normal:
         print('닿음')
         if group == 'cat:enemy':
             game_world.game_world_clear()
+        elif group == 'enemy:grass':
+                if self.dir == 1:
+                    self.dir = -1
+                else:
+                    self.dir = 1
+
         pass
 
     def handle_collision2(self, other, group):
@@ -207,6 +222,9 @@ class Enemy_turtle:
         self.y = y
         self.dir = 1
         self.x_max = self.x + 100
+
+        # 충돌 넘버
+        self.crash_number = 0
 
     def update(self):
         # while self.y > 0:
@@ -240,6 +258,11 @@ class Enemy_turtle:
         print('닿음')
         if group == 'cat:turtle':
             game_world.game_world_clear()
+        elif group == 'turtle:grass':
+            if self.dir == 1:
+                self.dir = -1
+            else:
+                self.dir = 1
         pass
 
     def handle_collision2(self, other, group):
@@ -259,6 +282,9 @@ class Enemy_air:
         self.y = y
         self.dir = -1
         self.xPos = xPos
+
+        # 충돌 넘버
+        self.crash_number = 0
 
     def update(self):
         # while self.y > 0:
