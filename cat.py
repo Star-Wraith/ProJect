@@ -4,6 +4,7 @@ import game_framework
 import death
 import game_world
 import Project2D
+import flagpos
 
 RD, LD, RU, LU, JUMP = range(5)
 event_name = ['RD', 'LD', 'RU', 'LU', 'JUMP']
@@ -103,14 +104,15 @@ class RUN:
         elif event == LU:
             self.dir += 1
         elif event == JUMP and self.jump_state == False:
-            self.jump_Sound.set_volume(60)
-            self.jump_Sound.play()
-            #
-            #
-            # self.jump_flag = 1
-            # self.jump = self.y
-            self.jump_s = 100
-            self.jump_state = True
+
+                self.jump_Sound.set_volume(60)
+                self.jump_Sound.play()
+                #
+                #
+                # self.jump_flag = 1
+                # self.jump = self.y
+                self.jump_s = 100
+                self.jump_state = True
 
 
 
@@ -148,6 +150,8 @@ class RUN:
 
         if self.jump_state == True:
             Cat.JUMP(self)
+
+
 
         #
         # if self.jump_flag == 1:
@@ -225,15 +229,15 @@ RUN_SPEED_PPS = (RUN_SPEED_MPS * PIXEL_PER_METER)
 
 
 class Cat:
-    def __init__(self):
+    def __init__(self, x=50, y=117, camera_pos=0):
         self.image = load_image('./res/players.PNG')
         self.image2 = load_image('./res/players2.png')
-        self.x = 50
-        self.y = 117
+        self.x = x
+        self.y = y
         self.frame = 0
         self.face_dir = 1
         self.dir = 0
-        self.camera_x = 0 # 카메라 구현 대기중
+        self.camera_x = camera_pos # 카메라 구현 대기중
         self.speed = 1
         # self.move_time = 3
         # self.move_delay = 1
@@ -265,6 +269,8 @@ class Cat:
     def update(self):
         self.cur_state.do(self)
 
+
+
         if self.event_que:
             event = self.event_que.pop()
             self.cur_state.exit(self, event)
@@ -274,7 +280,12 @@ class Cat:
                 print(self.cur_state.__name__, ' ', event_name[event])
             self.cur_state.enter(self, event)
 
+        if self.y > 1800:
 
+            Project2D.DEATH_SE.set_volume(60)
+            Project2D.DEATH_SE.play()
+            game_framework.change_state(death)
+            game_world.game_world_clear()
 
 
         # self.x += self.dir * 1
@@ -290,13 +301,13 @@ class Cat:
             self.jump_s -= RUN_SPEED_PPS * game_framework.frame_time/5
             self.gravity = 0
         elif self.jump_s <= 0:
-            if self.jump_count == 0:
+            if not self.jump_count:
                 self.gravity = self.speed * RUN_SPEED_PPS * game_framework.frame_time
-                self.jump_count += 1
+                self.jump_count = True
             else:
                 if self.gravity == 0:
                     self.jump_state = False
-                    self.jump_count = 0
+                    self.jump_count = False
 
 
 
@@ -373,14 +384,10 @@ class Cat:
                 # self.y -= 2
             elif self.y - 20 > other.y:
                 self.y += 3
-            # if self.x + other.get_bb()[0] - other.x + Project2D.camera + 10 < other.x - Project2D.camera:
-            #     self.x -= 2
-            # elif self.x - other.get_bb()[2] - other.x + Project2D.camera - 10 > other.x - Project2D.camera:
-            #     self.x += 2
-            # if self.y + other.get_bb()[1] - other.y < other.y:
-            #     self.y -= 2
-            # elif self.y + other.get_bb()[3] - other.y > other.y:
-            #     self.y += 2
+
+            if other.crash_number == 7:
+                flagpos.flag_pos_x, flagpos.flag_pos_y, flagpos.flag_camera_pos = self.x + Project2D.camera, self.y, self.camera_x
+
         pass
 
     def handle_collision2(self, other, group):

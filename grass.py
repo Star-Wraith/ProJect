@@ -1,15 +1,18 @@
 from pico2d import *
+
+import item
 from Project2D import *
 import Project2D
 import enemy
 import death
 import time
+import flagpos
 
-def TTime():
-    time_second = time.time() + 10
-    while True:
-        if time.time() > time_second:
-            break
+# def TTime():
+#     time_second = time.time() + 10
+#     while True:
+#         if time.time() > time_second:
+#             break
 TIME_PER_ACTION = 0.5
 ACTION_PER_TIME = 1.0 / TIME_PER_ACTION
 FRAMES_PER_ACTION = 2
@@ -22,6 +25,7 @@ RUN_SPEED_MPS = (RUN_SPEED_MPM / 60.0)
 RUN_SPEED_PPS = (RUN_SPEED_MPS * PIXEL_PER_METER)
 
 
+
 #1 일반 블럭
 class Grass:
     def __init__(self, x, y):  # 생성자
@@ -32,6 +36,8 @@ class Grass:
         # 충돌 넘버
         self.crash_number = 1
 
+        self.break_Sound = load_music('./SE/brockbreak.mp3')
+
 
     def draw(self):
         self.image.clip_draw(0, 0, 40, 40, self.x - Project2D.camera, self.y)
@@ -45,6 +51,9 @@ class Grass:
         return self.x - 20 - Project2D.camera, self.y - 20, self.x + 20 - Project2D.camera, self.y + 20
 
     def handle_collision(self, other, group):
+
+
+
         pass
     def handle_collision2(self, other, group):
         pass
@@ -52,13 +61,22 @@ class Grass:
 class Block_QM:
     def __init__(self, x, y):  # 생성자
         self.image = load_image('./res/blockqm.PNG')
+        self.image2 = load_image('./res/blockbrown.png')
         self.x = x + 20
         self.y = y + 20
 
+        self.block_type = False
+
         # 충돌 넘버
         self.crash_number = 2
+
+        self.brock_Sound = load_music('./SE/brockcoin.mp3')
+
     def draw(self):
-        self.image.clip_draw(0, 0, 40, 40, self.x - Project2D.camera, self.y)
+        if not self.block_type:
+            self.image.clip_draw(0, 0, 40, 40, self.x - Project2D.camera, self.y)
+        if self.block_type:
+            self.image2.clip_draw(0, 0, 40, 40, self.x - Project2D.camera, self.y)
         draw_rectangle(*self.get_bb())
 
     def update(self):
@@ -66,7 +84,19 @@ class Block_QM:
 
     def get_bb(self):
         return self.x - 20 - Project2D.camera, self.y - 20, self.x + 20 - Project2D.camera, self.y + 20
+
     def handle_collision(self, other, group):
+
+        if other.y + 20 < self.y and other.x - 20 < self.x - Project2D.camera < other.x + 20:
+            if not self.block_type:
+                self.block_type += 1
+                Project2D.item.append(item.Coin(self.x, self.y))
+                game_world.add_objects(Project2D.item, 1)
+                self.brock_Sound.set_volume(60)
+                self.brock_Sound.play()
+
+
+
         pass
     def handle_collision2(self, other, group):
 
@@ -75,15 +105,21 @@ class Block_QM:
 #3 투명 블럭
 class Block_Shadow:
     def __init__(self, x, y):  # 생성자
-        self.image = load_image('./res/blockqm.PNG')
+        self.image = load_image('./res/blockbrown.PNG')
         self.x = x + 20
         self.y = y + 20
 
+        self.block_type = False
+
         # 충돌 넘버
         self.crash_number = 3
-    def draw(self):
 
-        self.image.clip_draw(0, 0, 40, 40, self.x - Project2D.camera, self.y)
+        self.brock_Sound = load_music('./SE/brockcoin.mp3')
+
+    def draw(self):
+        if self.block_type:
+            self.image.clip_draw(0, 0, 40, 40, self.x - Project2D.camera, self.y)
+
         draw_rectangle(*self.get_bb())
 
 
@@ -93,6 +129,15 @@ class Block_Shadow:
     def get_bb(self):
         return self.x - 20 - Project2D.camera, self.y - 20, self.x + 20 - Project2D.camera, self.y + 20
     def handle_collision(self, other, group):
+
+        if other.y + 20 < self.y and other.x - 20 < self.x - Project2D.camera < other.x + 20:
+            if not self.block_type:
+                self.block_type += 1
+                Project2D.item.append(item.Coin(self.x, self.y))
+                game_world.add_objects(Project2D.item, 1)
+                self.brock_Sound.set_volume(60)
+                self.brock_Sound.play()
+
         pass
     def handle_collision2(self, other, group):
 
@@ -164,6 +209,7 @@ class Cloudsmall:
     def get_bb(self):
         return 0, 0, 0, 0
     def handle_collision(self, other, group):
+
         pass
     def handle_collision2(self, other, group):
 
@@ -177,19 +223,31 @@ class Flag:
         self.x = x + 20
         self.y = y + 62
 
+
+
+
         # 충돌 넘버
         self.crash_number = 7
+
     def draw(self):
         self.image.clip_draw(0, 6, 67, 124, self.x - Project2D.camera, self.y)
         draw_rectangle(*self.get_bb())
 
     def update(self):
+        if flagpos.flag_live:
+            game_world.remove_object(self)
+
         pass
     def get_bb(self):
-        return 0, 0, 0, 0
+        return self.x - 34 - Project2D.camera, self.y - 62, self.x + 34 - Project2D.camera, self.y + 62
+
     def handle_collision(self, other, group):
+        flagpos.flag_live = True
+        game_world.remove_object(self)
         pass
+
     def handle_collision2(self, other, group):
+        game_world.remove_object(self)
 
         pass
 #8 점프대
@@ -351,8 +409,6 @@ class SWITCH:
             Project2D.BOMB.append(enemy.Enemy_BOMB(6800, 800))
             game_world.add_objects(Project2D.BOMB, 2)
 
-            Project2D.BOMB.append(enemy.Enemy_BOMB(6000, 800))
-            game_world.add_objects(Project2D.BOMB, 2)
             self.COUNT += 1
 
 
@@ -367,8 +423,7 @@ class SWITCH:
             Project2D.BOMB.append(enemy.Enemy_BOMB(6800, 800))
             game_world.add_objects(Project2D.BOMB, 2)
 
-            Project2D.BOMB.append(enemy.Enemy_BOMB(6000, 800))
-            game_world.add_objects(Project2D.BOMB, 2)
+
             self.COUNT += 1
         pass
 

@@ -3,6 +3,7 @@ from pico2d import *
 import game_framework
 import game_world
 import read_map
+import flagpos
 import title
 import PAUSE
 # 배경
@@ -57,11 +58,13 @@ enemy_air = list()
 stage_bgm = None
 camera = None
 BOMB = list()
+item = list()
 Bye_bgm = None
 tok_se = None
 DEATH_SE = None
 def enter():
-    global cat, grass, running, screen, rocket, enemy, enemy_turtle, enemy_air, stage_bgm, BOMB, Bye_bgm, tok_se, DEATH_SE
+    global cat, grass, running, screen, rocket, enemy, enemy_turtle, enemy_air, stage_bgm, BOMB, Bye_bgm, tok_se, DEATH_SE, item, camera
+
 
 
     # clear
@@ -71,6 +74,7 @@ def enter():
     enemy_air.clear()
     grass.clear()
     BOMB.clear()
+    item.clear()
     Bye_bgm = load_music('./SE/Song.mp3')
     tok_se = load_music('./SE/koura.mp3')
     DEATH_SE = load_music('./SE/death.mp3')
@@ -80,7 +84,14 @@ def enter():
     stage_bgm.set_volume(60)
     stage_bgm.repeat_play()
     # ------------ 시작 브금 ------------------
-    cat = Cat()
+    if flagpos.flag_pos_y:
+        cat = Cat(200, flagpos.flag_pos_y, flagpos.flag_camera_pos)
+        camera = flagpos.flag_camera_pos
+    else:
+        cat = Cat()
+
+        rocket.append(Enemy_roket(1960, 900, 1440))     # 저장후 나오면 안됨
+
 
     # enemy_air = Enemy_air(750, 300)
     read_map.map_read()
@@ -101,7 +112,7 @@ def enter():
     enemy.append(Enemy_normal(8100, 104))
 
     # rocket
-    rocket.append(Enemy_roket(1960, 900, 1440))
+    # rocket.append(Enemy_roket(1960, 900, 1440))
     rocket.append(Enemy_roket(4000, 900, 3480))
     rocket.append(Enemy_roket(5040, 900, 4520))
     rocket.append(Enemy_roket(5120, 900, 4600))
@@ -132,6 +143,7 @@ def enter():
     game_world.add_objects(enemy, 1)
     game_world.add_objects(enemy_turtle, 1)
     game_world.add_objects(BOMB, 1)
+    game_world.add_objects(item, 1)
     # 배경
     game_world.add_object(screen, 0)
 
@@ -141,6 +153,7 @@ def enter():
     game_world.add_collision_group(cat, enemy_air, 'cat:air')
     game_world.add_collision_group(cat, grass, 'cat:grass')
     game_world.add_collision_group(cat, BOMB, 'cat:BOMB')
+    game_world.add_collision_group(cat, item, 'cat:item')
     game_world.add_collision_group(enemy, grass, 'enemy:grass')
 
 
@@ -153,7 +166,7 @@ def exit():
     game_world.clear()
 
 def update():
-    global camera, cat, grass
+    global camera, cat, grass, item
     camera = cat.camera_move()
     for game_object in game_world.all_objects():
         game_object.update()
@@ -166,6 +179,7 @@ def update():
         if collide(a, b) == 2:
             b.handle_collision2(a, group)
             a.handle_collision2(b, group)
+
 def draw_world():
     for game_object in game_world.all_objects():
         game_object.draw()

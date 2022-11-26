@@ -98,15 +98,14 @@ class Enemy_BOMB: # 수정 필요?
 
     def update(self):
 
-        if self.TIME >= 100:
+        if self.y < 0:
             game_framework.change_state(death)
+            game_world.game_world_clear()
 
-        self.y += self.dir * SPEED_ROKET_PPS * game_framework.frame_time
-        self.TIME += 1
-        # 화면 벗어나면 지우기
-        if self.y < -200:
-            # game_world.remove_object(self)
-            print('지우기 성공')
+        self.y += 2 * self.dir * SPEED_ROKET_PPS * game_framework.frame_time
+
+
+
     def draw(self):
         if self.dir == -1:
             self.image.clip_draw(0, 0, 800, 400, self.x - Project2D.camera, self.y)
@@ -115,14 +114,15 @@ class Enemy_BOMB: # 수정 필요?
         return self.x - 400 - Project2D.camera, self.y - 200, self.x + 400 - Project2D.camera, self.y + 200
 
     def handle_collision(self, other, group):
-        print('닿음')
         if group == 'cat:BOMB':
+            game_world.remove_object(self)
             game_world.game_world_clear()
         pass
 
     def handle_collision2(self, other, group):
-        if group == 'cat:BOMB':
-            game_world.game_world_clear()
+        # if group == 'cat:BOMB':
+        #     game_world.remove_object(self)
+        #     game_world.game_world_clear()
         pass
 
 
