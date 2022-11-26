@@ -44,7 +44,7 @@ def handle_events():
 # count = 0
 # # List Compreshension
 
-# open_canvas()ddddddd
+# open_canvas()
 screen = None
 # dir = 0
 grass = list()  # 잔디 객체를 생성
@@ -79,82 +79,123 @@ def enter():
     tok_se = load_music('./SE/koura.mp3')
     DEATH_SE = load_music('./SE/death.mp3')
 
-
-    stage_bgm = load_music('./BGM/field.mp3')
-    stage_bgm.set_volume(60)
-    stage_bgm.repeat_play()
-    # ------------ 시작 브금 ------------------
-    if flagpos.flag_pos_y:
-        cat = Cat(200, flagpos.flag_pos_y, flagpos.flag_camera_pos)
-        camera = flagpos.flag_camera_pos
-    else:
-        cat = Cat()
-
-        rocket.append(Enemy_roket(1960, 900, 1440))     # 저장후 나오면 안됨
-
-
-    # enemy_air = Enemy_air(750, 300)
     read_map.map_read()
-    grass = read_map.map_mapping
 
-    # # clear
-    # enemy.clear()
-    # rocket.clear()
-    # enemy_turtle.clear()
-    # enemy_air.clear()
+    if flagpos.stage_number == 1:
+
+        grass = read_map.map_mapping
+
+        stage_bgm = load_music('./BGM/field.mp3')
+        stage_bgm.set_volume(60)
+        stage_bgm.repeat_play()
+        # ------------ 시작 브금 ------------------
+        if flagpos.flag_pos_y:
+            cat = Cat(200, flagpos.flag_pos_y, flagpos.flag_camera_pos)
+            camera = flagpos.flag_camera_pos
+        else:
+            cat = Cat()
+
+            rocket.append(Enemy_roket(1960, 900, 1440))     # 저장후 나오면 안됨
 
 
-    # enemy
-    # enemy = Enemy_normal(500, 104)
-    enemy.append(Enemy_normal(500, 104))
-    enemy.append(Enemy_normal(1300, 104))
-    enemy.append(Enemy_normal(7980, 700, 7400))
-    enemy.append(Enemy_normal(8100, 104))
+        # # clear
+        # enemy.clear()
+        # rocket.clear()
+        # enemy_turtle.clear()
+        # enemy_air.clear()
 
-    # rocket
-    # rocket.append(Enemy_roket(1960, 900, 1440))
-    rocket.append(Enemy_roket(4000, 900, 3480))
-    rocket.append(Enemy_roket(5040, 900, 4520))
-    rocket.append(Enemy_roket(5120, 900, 4600))
-    rocket.append(Enemy_roket(9200, 900, 8680))
-    rocket.append(Enemy_roket(9300, 900, 8800))
-    rocket.append(Enemy_roket(9360, 900, 8800))
-    rocket.append(Enemy_roket(9420, 900, 8800))
-    rocket.append(Enemy_roket(9480, 900, 8800))
-    rocket.append(Enemy_roket(9540, 900, 8800))
 
-    # Enemy_turtle
-    enemy_turtle.append(Enemy_turtle(4840, 118))
-    enemy_turtle.append(Enemy_turtle(4960, 118))
-    enemy_turtle.append(Enemy_turtle(8140, 118))
+        # enemy
+        # enemy = Enemy_normal(500, 104)
+        enemy.append(Enemy_normal(500, 104))
+        enemy.append(Enemy_normal(1300, 104))
+        enemy.append(Enemy_normal(7980, 700, 7400))
+        enemy.append(Enemy_normal(8100, 104))
 
-    # Enemy_air
-    enemy_air.append(Enemy_air(7300, 300, 6500))
+        # rocket # 나오는 x좌표, 나오는 y좌표, cat의 위치가 도달하면 생성
+        # rocket.append(Enemy_roket(1960, 900, 1440))
+        rocket.append(Enemy_roket(4000, 900, 3480))
+        rocket.append(Enemy_roket(5040, 900, 4520))
+        rocket.append(Enemy_roket(5120, 900, 4600))
+        rocket.append(Enemy_roket(9200, 900, 8680))
+        rocket.append(Enemy_roket(9300, 900, 8800))
+        rocket.append(Enemy_roket(9360, 900, 8800))
+        rocket.append(Enemy_roket(9420, 900, 8800))
+        rocket.append(Enemy_roket(9480, 900, 8800))
+        rocket.append(Enemy_roket(9540, 900, 8800))
 
-    screen = Screen()
-    # 2는 플레이어
-    game_world.add_object(cat, 2)
+        # Enemy_turtle
+        enemy_turtle.append(Enemy_turtle(4840, 118))
+        enemy_turtle.append(Enemy_turtle(4960, 118))
+        enemy_turtle.append(Enemy_turtle(8140, 118))
 
-    # 적이랑 블럭은 1
+        # Enemy_air
+        enemy_air.append(Enemy_air(7300, 300, 6500))
 
-    game_world.add_objects(grass, 1)
-    game_world.add_objects(enemy_air, 1)
-    game_world.add_objects(rocket, 1)
-    game_world.add_objects(enemy, 1)
-    game_world.add_objects(enemy_turtle, 1)
-    game_world.add_objects(BOMB, 1)
-    game_world.add_objects(item, 1)
-    # 배경
-    game_world.add_object(screen, 0)
+        screen = Screen()
+        # 2는 플레이어
+        game_world.add_object(cat, 2)
 
-    game_world.add_collision_group(cat, enemy, 'cat:enemy')
-    game_world.add_collision_group(cat, rocket, 'cat:rocket')
-    game_world.add_collision_group(cat, enemy_turtle, 'cat:turtle')
-    game_world.add_collision_group(cat, enemy_air, 'cat:air')
-    game_world.add_collision_group(cat, grass, 'cat:grass')
-    game_world.add_collision_group(cat, BOMB, 'cat:BOMB')
-    game_world.add_collision_group(cat, item, 'cat:item')
-    game_world.add_collision_group(enemy, grass, 'enemy:grass')
+        # 적이랑 블럭은 1
+
+        game_world.add_objects(grass, 1)
+        game_world.add_objects(enemy_air, 1)
+        game_world.add_objects(rocket, 1)
+        game_world.add_objects(enemy, 1)
+        game_world.add_objects(enemy_turtle, 1)
+        game_world.add_objects(BOMB, 1)
+        game_world.add_objects(item, 1)
+        # 배경
+        game_world.add_object(screen, 0)
+
+        game_world.add_collision_group(cat, enemy, 'cat:enemy')
+        game_world.add_collision_group(cat, rocket, 'cat:rocket')
+        game_world.add_collision_group(cat, enemy_turtle, 'cat:turtle')
+        game_world.add_collision_group(cat, enemy_air, 'cat:air')
+        game_world.add_collision_group(cat, grass, 'cat:grass')
+        game_world.add_collision_group(cat, BOMB, 'cat:BOMB')
+        game_world.add_collision_group(enemy, grass, 'enemy:grass')
+        game_world.add_collision_group(cat, item, 'cat:item')
+
+    elif flagpos.stage_number == 2:
+
+        grass = read_map.map_mapping
+
+        stage_bgm = load_music('./BGM/field.mp3')
+        stage_bgm.set_volume(60)
+        stage_bgm.repeat_play()
+        # ------------ 시작 브금 ------------------
+        if flagpos.flag_pos_y:
+            cat = Cat(200, flagpos.flag_pos_y, flagpos.flag_camera_pos)
+            camera = flagpos.flag_camera_pos
+        else:
+            cat = Cat(50, 350)
+
+        screen = Screen()
+        # 2는 플레이어
+        game_world.add_object(cat, 2)
+
+        # 적이랑 블럭은 1
+
+        game_world.add_objects(grass, 1)
+        game_world.add_objects(enemy_air, 1)
+        game_world.add_objects(rocket, 1)
+        game_world.add_objects(enemy, 1)
+        game_world.add_objects(enemy_turtle, 1)
+        game_world.add_objects(BOMB, 1)
+        game_world.add_objects(item, 1)
+        # 배경
+        game_world.add_object(screen, 0)
+
+        game_world.add_collision_group(cat, enemy, 'cat:enemy')
+        game_world.add_collision_group(cat, rocket, 'cat:rocket')
+        game_world.add_collision_group(cat, enemy_turtle, 'cat:turtle')
+        game_world.add_collision_group(cat, enemy_air, 'cat:air')
+        game_world.add_collision_group(cat, grass, 'cat:grass')
+        game_world.add_collision_group(cat, BOMB, 'cat:BOMB')
+        game_world.add_collision_group(enemy, grass, 'enemy:grass')
+        game_world.add_collision_group(cat, item, 'cat:item')
+
 
 
 

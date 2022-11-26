@@ -52,10 +52,23 @@ class Grass:
 
     def handle_collision(self, other, group):
 
+        if other.crash_number == 9999:
+            if other.power_up:
+                self.break_Sound.set_volume(60)
+                self.break_Sound.play()
+                game_world.remove_object(self)
+
 
 
         pass
     def handle_collision2(self, other, group):
+
+        if other.crash_number == 9999:
+            if other.power_up:
+                self.break_Sound.set_volume(60)
+                self.break_Sound.play()
+                game_world.remove_object(self)
+
         pass
 #2 ? 블럭
 class Block_QM:
@@ -71,6 +84,7 @@ class Block_QM:
         self.crash_number = 2
 
         self.brock_Sound = load_music('./SE/brockcoin.mp3')
+        self.break_Sound = load_music('./SE/brockbreak.mp3')
 
     def draw(self):
         if not self.block_type:
@@ -87,6 +101,12 @@ class Block_QM:
 
     def handle_collision(self, other, group):
 
+        if other.crash_number == 9999:
+            if other.power_up:
+                self.break_Sound.set_volume(60)
+                self.break_Sound.play()
+                game_world.remove_object(self)
+
         if other.y + 20 < self.y and other.x - 20 < self.x - Project2D.camera < other.x + 20:
             if not self.block_type:
                 self.block_type += 1
@@ -99,6 +119,13 @@ class Block_QM:
 
         pass
     def handle_collision2(self, other, group):
+
+        if other.crash_number == 9999:
+            if other.power_up:
+                self.break_Sound.set_volume(60)
+                self.break_Sound.play()
+                game_world.remove_object(self)
+
 
         pass
 
@@ -115,6 +142,9 @@ class Block_Shadow:
         self.crash_number = 3
 
         self.brock_Sound = load_music('./SE/brockcoin.mp3')
+        self.break_Sound = load_music('./SE/brockbreak.mp3')
+
+
 
     def draw(self):
         if self.block_type:
@@ -128,7 +158,14 @@ class Block_Shadow:
 
     def get_bb(self):
         return self.x - 20 - Project2D.camera, self.y - 20, self.x + 20 - Project2D.camera, self.y + 20
+
     def handle_collision(self, other, group):
+
+        if other.crash_number == 9999:
+            if other.power_up:
+                self.break_Sound.set_volume(60)
+                self.break_Sound.play()
+                game_world.remove_object(self)
 
         if other.y + 20 < self.y and other.x - 20 < self.x - Project2D.camera < other.x + 20:
             if not self.block_type:
@@ -139,7 +176,15 @@ class Block_Shadow:
                 self.brock_Sound.play()
 
         pass
+
     def handle_collision2(self, other, group):
+
+        if other.crash_number == 9999:
+            if other.power_up:
+                self.break_Sound.set_volume(60)
+                self.break_Sound.play()
+                game_world.remove_object(self)
+
 
         pass
 #4 산
@@ -151,6 +196,7 @@ class Mountain:
 
         # 충돌 넘버
         self.crash_number = 4
+
     def draw(self):
         self.image.clip_draw(0, 314, 298, 182, self.x - Project2D.camera, self.y)
         draw_rectangle(*self.get_bb())
@@ -160,8 +206,10 @@ class Mountain:
 
     def get_bb(self):
         return 0, 0, 0, 0
+
     def handle_collision(self, other, group):
         pass
+
     def handle_collision2(self, other, group):
 
         pass
@@ -175,6 +223,7 @@ class Cloud:
 
         # 충돌 넘버
         self.crash_number = 5
+
     def draw(self):
         self.image.clip_draw(303, 354, 138, 80, self.x - Project2D.camera, self.y)
         draw_rectangle(*self.get_bb())
@@ -185,8 +234,10 @@ class Cloud:
 
     def get_bb(self):
         return 0, 0, 0, 0
+
     def handle_collision(self, other, group):
         pass
+
     def handle_collision2(self, other, group):
 
         pass
@@ -200,22 +251,57 @@ class Cloudsmall:
 
         # 충돌 넘버
         self.crash_number = 6
+
     def draw(self):
         self.image.clip_draw(302, 212, 101, 58, self.x - Project2D.camera, self.y)
         draw_rectangle(*self.get_bb())
 
     def update(self):
         pass
+
     def get_bb(self):
         return 0, 0, 0, 0
+
     def handle_collision(self, other, group):
 
         pass
+
     def handle_collision2(self, other, group):
 
         pass
 
+#66 적 구름
+class Cloud_enemy:
+    def __init__(self, x, y):  # 생성자
+        self.image = load_image('./res/haikei.PNG')
+        self.x = x + 20
+        self.y = y + 20
 
+        # 충돌 넘버
+        self.crash_number = 66
+
+        self.block_type = False
+
+    def draw(self):
+        if self.block_type:
+            self.image.clip_draw(303, 272, 138, 80, self.x - Project2D.camera, self.y)
+        draw_rectangle(*self.get_bb())
+
+    def update(self):
+        pass
+
+    def get_bb(self):
+        return self.x - 69 - Project2D.camera, self.y - 40, self.x + 69 - Project2D.camera, self.y + 40
+
+    def handle_collision(self, other, group):
+        self.block_type = True
+
+        pass
+
+    def handle_collision2(self, other, group):
+        self.block_type = True
+
+        pass
 #7 저장 플래그
 class Flag:
     def __init__(self, x, y):  # 생성자
@@ -238,6 +324,7 @@ class Flag:
             game_world.remove_object(self)
 
         pass
+
     def get_bb(self):
         return self.x - 34 - Project2D.camera, self.y - 62, self.x + 34 - Project2D.camera, self.y + 62
 
@@ -259,6 +346,7 @@ class JUMP_Bar:
 
         # 충돌 넘버
         self.crash_number = 8
+
     def draw(self):
         self.image.clip_draw(357, 8, 47, 49, self.x - Project2D.camera, self.y)
         draw_rectangle(*self.get_bb())
@@ -268,8 +356,10 @@ class JUMP_Bar:
 
     def get_bb(self):
         return self.x - 23 - Project2D.camera, self.y - 23, self.x + 23 - Project2D.camera, self.y + 23
+
     def handle_collision(self, other, group):
         pass
+
     def handle_collision2(self, other, group):
         Project2D.cat.speed = 10
 
@@ -286,6 +376,9 @@ class Block_Drop:
 
         # 충돌 넘버
         self.crash_number = 9
+
+        self.break_Sound = load_music('./SE/brockbreak.mp3')
+
     def draw(self):
         self.image.clip_draw(0, 0, 40, 80, self.x - Project2D.camera, self.y)
         draw_rectangle(*self.get_bb())
@@ -296,9 +389,25 @@ class Block_Drop:
 
     def get_bb(self):
         return self.x - 20 - Project2D.camera, self.y - 40, self.x + 20 - Project2D.camera, self.y + 40
+
     def handle_collision(self, other, group):
+
+        if other.crash_number == 9999:
+            if other.power_up:
+                self.break_Sound.set_volume(60)
+                self.break_Sound.play()
+                game_world.remove_object(self)
+
         pass
+
     def handle_collision2(self, other, group):
+
+        if other.crash_number == 9999:
+            if other.power_up:
+                self.break_Sound.set_volume(60)
+                self.break_Sound.play()
+                game_world.remove_object(self)
+
         self.speed = 2 * RUN_SPEED_PPS * game_framework.frame_time
 
         pass
@@ -307,14 +416,22 @@ class Block_Drop:
 class Block_RM:
     def __init__(self, x, y):  # 생성자
         self.image = load_image('./res/blockqm.PNG')
+        self.image2 = load_image('./res/blockbrown.png')
         self.x = x + 20
         self.y = y + 20
 
+        self.block_type = False
+
+        self.brock_Sound = load_music('./SE/dokan.mp3')
+        self.break_Sound = load_music('./SE/brockbreak.mp3')
         # 충돌 넘버
         self.crash_number = 21
+
     def draw(self):
-        self.image.clip_draw(0, 0, 40, 40, self.x - Project2D.camera, self.y)
-        draw_rectangle(*self.get_bb())
+        if not self.block_type:
+            self.image.clip_draw(0, 0, 40, 40, self.x - Project2D.camera, self.y)
+        if self.block_type:
+            self.image2.clip_draw(0, 0, 40, 40, self.x - Project2D.camera, self.y)
 
     def update(self):
         pass
@@ -322,9 +439,34 @@ class Block_RM:
 
     def get_bb(self):
         return self.x - 20 - Project2D.camera, self.y - 20, self.x + 20 - Project2D.camera, self.y + 20
+
     def handle_collision(self, other, group):
+
+        if other.crash_number == 9999:
+            if other.power_up:
+                self.break_Sound.set_volume(60)
+                self.break_Sound.play()
+                game_world.remove_object(self)
+
+
+        if other.y + 20 < self.y and other.x - 20 < self.x - Project2D.camera < other.x + 20:
+            if not self.block_type:
+                self.block_type += 1
+                Project2D.item.append(item.Red_mushroom(self.x, self.y))
+                game_world.add_objects(Project2D.item, 1)
+                game_world.add_collision_group(Project2D.cat, Project2D.item, 'cat:item')
+                self.brock_Sound.set_volume(60)
+                self.brock_Sound.play()
         pass
+
     def handle_collision2(self, other, group):
+
+        if other.crash_number == 9999:
+            if other.power_up:
+                self.break_Sound.set_volume(60)
+                self.break_Sound.play()
+                game_world.remove_object(self)
+
 
         pass
 
@@ -332,14 +474,25 @@ class Block_RM:
 class Block_PM:
     def __init__(self, x, y):  # 생성자
         self.image = load_image('./res/blockqm.PNG')
+        self.image2 = load_image('./res/blockbrown.png')
         self.x = x + 20
         self.y = y + 20
+
+
+        self.block_type = False
+
+        self.brock_Sound = load_music('./SE/dokan.mp3')
+        self.break_Sound = load_music('./SE/brockbreak.mp3')
 
         # 충돌 넘버
         self.crash_number = 42
 
     def draw(self):
-        self.image.clip_draw(0, 0, 40, 40, self.x - Project2D.camera, self.y)
+        if not self.block_type:
+            self.image.clip_draw(0, 0, 40, 40, self.x - Project2D.camera, self.y)
+        if self.block_type:
+            self.image2.clip_draw(0, 0, 40, 40, self.x - Project2D.camera, self.y)
+
         draw_rectangle(*self.get_bb())
 
     def update(self):
@@ -348,13 +501,155 @@ class Block_PM:
 
     def get_bb(self):
         return self.x - 20 - Project2D.camera, self.y - 20, self.x + 20 - Project2D.camera, self.y + 20
+
     def handle_collision(self, other, group):
+        if other.crash_number == 9999:
+            if other.power_up:
+                self.break_Sound.set_volume(60)
+                self.break_Sound.play()
+                game_world.remove_object(self)
+
+        if other.y + 20 < self.y and other.x - 20 < self.x - Project2D.camera < other.x + 20:
+            if not self.block_type:
+                self.block_type += 1
+                Project2D.item.append(item.Poison_mushroom(self.x, self.y))
+                game_world.add_objects(Project2D.item, 1)
+                game_world.add_collision_group(Project2D.cat, Project2D.item, 'cat:item')
+                self.brock_Sound.set_volume(60)
+                self.brock_Sound.play()
+
+
         pass
+
     def handle_collision2(self, other, group):
+        if other.crash_number == 9999:
+            if other.power_up:
+                self.break_Sound.set_volume(60)
+                self.break_Sound.play()
+                game_world.remove_object(self)
+
+        pass
+
+#77 스타 ? 블럭 # 수정 필요!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+class Block_STAR:
+    def __init__(self, x, y):  # 생성자
+        self.image = load_image('./res/blockqm.PNG')
+        self.image2 = load_image('./res/blockbrown.png')
+        self.x = x + 20
+        self.y = y + 20
+
+
+        self.block_type = False
+
+        self.brock_Sound = load_music('./SE/dokan.mp3')
+        self.break_Sound = load_music('./SE/brockbreak.mp3')
+
+        # 충돌 넘버
+        self.crash_number = 42
+
+    def draw(self):
+        if not self.block_type:
+            self.image.clip_draw(0, 0, 40, 40, self.x - Project2D.camera, self.y)
+        if self.block_type:
+            self.image2.clip_draw(0, 0, 40, 40, self.x - Project2D.camera, self.y)
+
+        draw_rectangle(*self.get_bb())
+
+    def update(self):
+        pass
+
+
+    def get_bb(self):
+        return self.x - 20 - Project2D.camera, self.y - 20, self.x + 20 - Project2D.camera, self.y + 20
+
+    def handle_collision(self, other, group):
+        if other.crash_number == 9999:
+            if other.power_up:
+                self.break_Sound.set_volume(60)
+                self.break_Sound.play()
+                game_world.remove_object(self)
+
+        if other.y + 20 < self.y and other.x - 20 < self.x - Project2D.camera < other.x + 20:
+            if not self.block_type:
+                self.block_type += 1
+                Project2D.item.append(item.Poison_mushroom(self.x, self.y))
+                game_world.add_objects(Project2D.item, 1)
+                game_world.add_collision_group(Project2D.cat, Project2D.item, 'cat:item')
+                self.brock_Sound.set_volume(60)
+                self.brock_Sound.play()
+
+
+        pass
+
+    def handle_collision2(self, other, group):
+        if other.crash_number == 9999:
+            if other.power_up:
+                self.break_Sound.set_volume(60)
+                self.break_Sound.play()
+                game_world.remove_object(self)
 
         pass
 
 
+#12 스위치 있는 ? 블럭 # 수정 필요!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+class Block_Switch:
+    def __init__(self, x, y):  # 생성자
+        self.image = load_image('./res/blockqm.PNG')
+        self.image2 = load_image('./res/blockbrown.png')
+        self.x = x + 20
+        self.y = y + 20
+
+
+        self.block_type = False
+
+        self.brock_Sound = load_music('./SE/dokan.mp3')
+        self.break_Sound = load_music('./SE/brockbreak.mp3')
+
+        # 충돌 넘버
+        self.crash_number = 42
+
+    def draw(self):
+        if not self.block_type:
+            self.image.clip_draw(0, 0, 40, 40, self.x - Project2D.camera, self.y)
+        if self.block_type:
+            self.image2.clip_draw(0, 0, 40, 40, self.x - Project2D.camera, self.y)
+
+        draw_rectangle(*self.get_bb())
+
+    def update(self):
+        pass
+
+
+    def get_bb(self):
+        return self.x - 20 - Project2D.camera, self.y - 20, self.x + 20 - Project2D.camera, self.y + 20
+
+    def handle_collision(self, other, group):
+        if other.crash_number == 9999:
+            if other.power_up:
+                self.break_Sound.set_volume(60)
+                self.break_Sound.play()
+                game_world.remove_object(self)
+
+        if other.y + 20 < self.y and other.x - 20 < self.x - Project2D.camera < other.x + 20:
+            if not self.block_type:
+                self.block_type += 1
+                Project2D.item.append(item.Poison_mushroom(self.x, self.y))
+                game_world.add_objects(Project2D.item, 1)
+                game_world.add_collision_group(Project2D.cat, Project2D.item, 'cat:item')
+                self.brock_Sound.set_volume(60)
+                self.brock_Sound.play()
+
+
+        pass
+
+    def handle_collision2(self, other, group):
+        if other.crash_number == 9999:
+            if other.power_up:
+                self.break_Sound.set_volume(60)
+                self.break_Sound.play()
+                game_world.remove_object(self)
+
+        pass
 
 #88 나무
 class TREE:
@@ -407,7 +702,8 @@ class SWITCH:
             Project2D.Bye_bgm.repeat_play()
 
             Project2D.BOMB.append(enemy.Enemy_BOMB(6800, 800))
-            game_world.add_objects(Project2D.BOMB, 2)
+            game_world.add_objects(Project2D.BOMB, 1)
+            game_world.add_collision_group(Project2D.cat, Project2D.BOMB, 'cat:BOMB')
 
             self.COUNT += 1
 
@@ -421,12 +717,61 @@ class SWITCH:
             Project2D.Bye_bgm.repeat_play()
 
             Project2D.BOMB.append(enemy.Enemy_BOMB(6800, 800))
-            game_world.add_objects(Project2D.BOMB, 2)
+            game_world.add_objects(Project2D.BOMB, 1)
+            game_world.add_collision_group(Project2D.cat, Project2D.BOMB, 'cat:BOMB')
 
 
             self.COUNT += 1
         pass
 
+#17 코인 스위치  수정필요!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+class SWITCH_COIN:
+    def __init__(self, x, y):  # 생성자
+        self.image = load_image('./res/switch.png')
+        self.x = x + 20
+        self.y = y + 40
+        self.COUNT = 0
+
+        # 충돌 넘버
+        self.crash_number = 10
+    def draw(self):
+        self.image.clip_draw(0, 0, 80, 80, self.x - Project2D.camera, self.y)
+        draw_rectangle(*self.get_bb())
+
+    def update(self):
+        pass
+
+    def get_bb(self):
+        return self.x - 40 - Project2D.camera, self.y - 40, self.x + 40 - Project2D.camera, self.y + 40
+    def handle_collision(self, other, group):
+        if self.COUNT == 0:
+            game_world.remove_object(self)
+
+            Project2D.Bye_bgm.set_volume(60)
+            Project2D.Bye_bgm.repeat_play()
+
+            Project2D.BOMB.append(enemy.Enemy_BOMB(6800, 800))
+            game_world.add_objects(Project2D.BOMB, 1)
+            game_world.add_collision_group(Project2D.cat, Project2D.BOMB, 'cat:BOMB')
+
+            self.COUNT += 1
+
+
+        pass
+    def handle_collision2(self, other, group):
+        if self.COUNT == 0:
+            game_world.remove_object(self)
+
+            Project2D.Bye_bgm.set_volume(60)
+            Project2D.Bye_bgm.repeat_play()
+
+            Project2D.BOMB.append(enemy.Enemy_BOMB(6800, 800))
+            game_world.add_objects(Project2D.BOMB, 1)
+            game_world.add_collision_group(Project2D.cat, Project2D.BOMB, 'cat:BOMB')
+
+
+            self.COUNT += 1
+        pass
 
 
 #11 굴뚝
@@ -435,6 +780,8 @@ class Roof:
         self.image = load_image('./res/roof.png')
         self.x = x + 20
         self.y = y + 80
+
+        self.break_Sound = load_music('./SE/brockbreak.mp3')
 
         # 충돌 넘버
         self.crash_number = 11
@@ -447,9 +794,21 @@ class Roof:
 
     def get_bb(self):
         return self.x - 60 - Project2D.camera, self.y - 80, self.x + 60 - Project2D.camera, self.y + 80
+
     def handle_collision(self, other, group):
+        if other.crash_number == 9999:
+            if other.power_up:
+                self.break_Sound.set_volume(60)
+                self.break_Sound.play()
+                game_world.remove_object(self)
         pass
+
     def handle_collision2(self, other, group):
+        if other.crash_number == 9999:
+            if other.power_up:
+                self.break_Sound.set_volume(60)
+                self.break_Sound.play()
+                game_world.remove_object(self)
 
         pass
 
@@ -478,6 +837,32 @@ class Leaf:
         pass
 # 55: 결승봉
 class Bong:
+    def __init__(self, x, y):  # 생성자
+        self.image = load_image('./res/bong.png')
+        self.x = x + 20
+        self.y = y + 220
+
+        # 충돌 넘버
+        self.crash_number = 55
+    def draw(self):
+        self.image.clip_draw(0, 0, 40, 440, self.x - Project2D.camera, self.y)
+        draw_rectangle(*self.get_bb())
+
+    def update(self):
+        pass
+
+
+    def get_bb(self):
+        return self.x - 20 - Project2D.camera, self.y - 220, self.x + 20 - Project2D.camera, self.y + 220
+
+    def handle_collision(self, other, group):
+        pass
+    def handle_collision2(self, other, group):
+
+        pass
+
+# 22: 적 결승봉  수정필요!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+class Bong_Enemy:
     def __init__(self, x, y):  # 생성자
         self.image = load_image('./res/bong.png')
         self.x = x + 20
@@ -555,5 +940,96 @@ class Block_UP:
 
         pass
     def handle_collision2(self, other, group):
+
+        pass
+
+#51 네모 5개 블럭  수정필요!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+class Grass_Ver2:
+    def __init__(self, x, y):  # 생성자
+        self.image = load_image('./res/brocknormal.PNG')
+        self.x = x + 20
+        self.y = y + 20
+
+        # 충돌 넘버
+        self.crash_number = 1
+
+        self.break_Sound = load_music('./SE/brockbreak.mp3')
+
+
+    def draw(self):
+        self.image.clip_draw(0, 0, 40, 40, self.x - Project2D.camera, self.y)
+        draw_rectangle(*self.get_bb())
+
+
+    def update(self):
+        pass
+
+    def get_bb(self):
+        return self.x - 20 - Project2D.camera, self.y - 20, self.x + 20 - Project2D.camera, self.y + 20
+
+    def handle_collision(self, other, group):
+
+        if other.crash_number == 9999:
+            if other.power_up:
+                self.break_Sound.set_volume(60)
+                self.break_Sound.play()
+                game_world.remove_object(self)
+
+
+
+        pass
+    def handle_collision2(self, other, group):
+
+        if other.crash_number == 9999:
+            if other.power_up:
+                self.break_Sound.set_volume(60)
+                self.break_Sound.play()
+                game_world.remove_object(self)
+
+        pass
+
+
+#19그냥 떨어지는 블럭  수정필요!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+class Block_UP_DOWN:
+    def __init__(self, x, y):  # 생성자
+        self.image = load_image('./res/brocknormal.PNG')
+        self.x = x + 20
+        self.y = y + 20
+
+        # 충돌 넘버
+        self.crash_number = 1
+
+        self.break_Sound = load_music('./SE/brockbreak.mp3')
+
+
+    def draw(self):
+        self.image.clip_draw(0, 0, 40, 40, self.x - Project2D.camera, self.y)
+        draw_rectangle(*self.get_bb())
+
+
+    def update(self):
+        pass
+
+    def get_bb(self):
+        return self.x - 20 - Project2D.camera, self.y - 20, self.x + 20 - Project2D.camera, self.y + 20
+
+    def handle_collision(self, other, group):
+
+        if other.crash_number == 9999:
+            if other.power_up:
+                self.break_Sound.set_volume(60)
+                self.break_Sound.play()
+                game_world.remove_object(self)
+
+
+
+        pass
+    def handle_collision2(self, other, group):
+
+        if other.crash_number == 9999:
+            if other.power_up:
+                self.break_Sound.set_volume(60)
+                self.break_Sound.play()
+                game_world.remove_object(self)
 
         pass

@@ -6,9 +6,13 @@ map_mapping = []
 Pos_x = None
 Pos_y = None
 i = None
+import flagpos
 def map_read():
     global map_choice, map_mapping, Pos_x, Pos_y, i
-    map_choice = map_data.map_stage1_data
+    if flagpos.stage_number == 1:
+        map_choice = map_data.map_stage1_data
+    elif flagpos.stage_number == 2:
+        map_choice = map_data.map_stage2_data
 
     for y in range(16):
         for x in range(240):
@@ -44,6 +48,11 @@ def map_read():
 
             elif map_choice[y][x] == 6:
                 i = grass.Cloudsmall(Pos_x, Pos_y)
+                map_mapping.append(i)
+                # map_mapping.append = grass.Cloudsmall(Pos_x, Pos_y)
+
+            elif map_choice[y][x] == 66:
+                i = grass.Cloud_enemy(Pos_x, Pos_y)
                 map_mapping.append(i)
                 # map_mapping.append = grass.Cloudsmall(Pos_x, Pos_y)
 
@@ -98,6 +107,11 @@ def map_read():
                 map_mapping.append(i)
                 # map_mapping.append = grass.Bong(Pos_x, Pos_y)
 
+            elif map_choice[y][x] == 22:
+                i = grass.Bong_Enemy(Pos_x, Pos_y)
+                map_mapping.append(i)
+                # map_mapping.append = grass.Bong(Pos_x, Pos_y)
+
             elif map_choice[y][x] == 56:
                 i = grass.Clear_Door(Pos_x, Pos_y)
                 map_mapping.append(i)
@@ -107,6 +121,31 @@ def map_read():
                 i = grass.Block_UP(Pos_x, Pos_y)
                 map_mapping.append(i)
                 # map_mapping.append = grass.Clear_Door(Pos_x, Pos_y)
+
+            elif map_choice[y][x] == 51:
+                i = grass.Grass_Ver2(Pos_x, Pos_y)
+                # map_mapping.append = grass.Grass(Pos_x, Pos_y)
+                map_mapping.append(i)
+
+            elif map_choice[y][x] == 19:
+                i = grass.Block_UP_DOWN(Pos_x, Pos_y)
+                # map_mapping.append = grass.Grass(Pos_x, Pos_y)
+                map_mapping.append(i)
+
+            elif map_choice[y][x] == 77:
+                i = grass.Block_STAR(Pos_x, Pos_y)
+                # map_mapping.append = grass.Grass(Pos_x, Pos_y)
+                map_mapping.append(i)
+
+            elif map_choice[y][x] == 12:
+                i = grass.Block_Switch(Pos_x, Pos_y)
+                # map_mapping.append = grass.Grass(Pos_x, Pos_y)
+                map_mapping.append(i)
+
+            elif map_choice[y][x] == 17:
+                i = grass.SWITCH_COIN(Pos_x, Pos_y)
+                # map_mapping.append = grass.Grass(Pos_x, Pos_y)
+                map_mapping.append(i)
 
 
 

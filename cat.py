@@ -59,6 +59,9 @@ class IDLE:
 
         self.y -= self.gravity
 
+        if self.death_cat:
+            Cat.death(self)
+
         pass
 
 
@@ -77,12 +80,15 @@ class IDLE:
         #     else:
         #         self.image2.clip_draw(186 - 46, 1, 46, 70, self.x, self.y)
 
-        if self.face_dir == 1:
+        if self.death_cat:
+            self.image.clip_draw(3 * 48, 1, 46, 70, self.x, self.y)
+        elif self.power_up:
+            self.image_power.clip_draw(0, 0, 128, 220, self.x, self.y)
+        elif self.face_dir == 1:
             if self.jump_state == True:
                 self.image.clip_draw(2 * 49, 1, 46, 70, self.x, self.y)
             else:
                 self.image.clip_draw(49, 1, 46, 70, self.x, self.y)
-
         else:
             if self.jump_state == True:
                 self.image2.clip_draw(186 - 46 * 2, 1, 46, 70, self.x, self.y)
@@ -151,6 +157,10 @@ class RUN:
         if self.jump_state == True:
             Cat.JUMP(self)
 
+        if self.death_cat:
+            print("여기!!")
+            Cat.death(self)
+
 
 
         #
@@ -190,12 +200,18 @@ class RUN:
     #         else:
     #             self.image2.clip_draw(186 - 46 * int(self.frame), 1, 46, 70, self.x, self.y)
 
-        if self.dir == 1:
+
+
+
+        if self.death_cat:
+            self.image.clip_draw(3 * 48, 1, 46, 70, self.x, self.y)
+        elif self.power_up:
+            self.image_power.clip_draw(0, 0, 128, 220, self.x, self.y)
+        elif self.dir == 1:
             if self.jump_state == True or self.gravity != 0:
                 self.image.clip_draw(2 * 49, 1, 46, 70, self.x, self.y)
             else:
                 self.image.clip_draw(int(self.frame) * 49, 1, 46, 70, self.x, self.y)
-
         elif self.dir == -1:
             if  self.jump_state == True or self.gravity != 0:
                 self.image2.clip_draw(186 - 46 * 2, 1, 46, 70, self.x, self.y)
@@ -232,6 +248,7 @@ class Cat:
     def __init__(self, x=50, y=117, camera_pos=0):
         self.image = load_image('./res/players.PNG')
         self.image2 = load_image('./res/players2.png')
+        self.image_power = load_image('./res/powerup.png')
         self.x = x
         self.y = y
         self.frame = 0
@@ -249,11 +266,16 @@ class Cat:
         self.jump_flag = 0
 
         self.jump_Sound = load_music('./SE/jump.mp3')
+        self.clear_Sound = load_music('./SE/goal.mp3')
 
         self.jump_state = False
         self.gravity = 2 * RUN_SPEED_PPS * game_framework.frame_time
         self.jump_s = 100
         self.jump_count = 0
+
+        self.power_up = False   # 빨간 버섯 충돌
+        self.death_cat = False
+
 
 
 
@@ -263,33 +285,68 @@ class Cat:
 
         # 죽음
         self.death_pos = 0
+        self.yPlus = 0
+
+        # 클리어 대기시간
+        self.clear_pos = 0
+        self.clear_time = 0
 
 
 
     def update(self):
-        self.cur_state.do(self)
+        # self.cur_state.do(self)
 
+        if self.death_cat:
+            Cat.death(self)
+        elif self.clear_pos:
+            Cat.stage_clear(self)
+        else:
+            self.cur_state.do(self)
+            if self.event_que:
+                event = self.event_que.pop()
+                self.cur_state.exit(self, event)
+                try:
+                    self.cur_state = next_state[self.cur_state][event]
+                except KeyError:
+                    print(self.cur_state.__name__, ' ', event_name[event])
+                self.cur_state.enter(self, event)
 
-
-        if self.event_que:
-            event = self.event_que.pop()
-            self.cur_state.exit(self, event)
-            try:
-                self.cur_state = next_state[self.cur_state][event]
-            except KeyError:
-                print(self.cur_state.__name__, ' ', event_name[event])
-            self.cur_state.enter(self, event)
-
-        if self.y > 1800:
+        if self.y > 1200:
 
             Project2D.DEATH_SE.set_volume(60)
             Project2D.DEATH_SE.play()
-            game_framework.change_state(death)
-            game_world.game_world_clear()
+            self.death_cat = True
+            # game_framework.change_state(death)
+            # game_world.game_world_clear()
+        elif self.y < -220 and self.death_cat == False:
+            Project2D.DEATH_SE.set_volume(60)
+            Project2D.DEATH_SE.play()
+            self.death_cat = True
 
 
         # self.x += self.dir * 1
         # self.frame = self.frame % 2
+    def death(self): # 여기 하는중
+        if self.yPlus < 200:
+            self.y += RUN_SPEED_PPS * game_framework.frame_time
+            self.yPlus += RUN_SPEED_PPS * game_framework.frame_time
+        elif self.y > - 400:
+            self.y -= RUN_SPEED_PPS * game_framework.frame_time
+        else:
+            game_framework.change_state(death)
+            game_world.game_world_clear()
+
+    def stage_clear(self):
+        if self.y > 160:
+            self.y -= RUN_SPEED_PPS * game_framework.frame_time/2
+        elif self.clear_time < 1000 * game_framework.frame_time:
+            self.clear_time += game_framework.frame_time
+        else:
+            flagpos.stage_number += 1
+            game_framework.change_state(death) # 2 Stage로 변경
+
+
+
 
     def draw(self):
         self.cur_state.draw(self)
@@ -337,7 +394,12 @@ class Cat:
             key_event = key_event_table[(event.type, event.key)]
             self.add_event(key_event)
 
+
     def get_bb(self):
+        if self.power_up:
+            return self.x - 64, self.y - 110, self.x + 64, self.y + 110
+        if self.death_cat:
+            return 1000, 1000, 1000, 1000
         return self.x - 20, self.y - 40, self.x + 20, self.y + 40
 
     # def death_motion(self):
@@ -356,21 +418,21 @@ class Cat:
         if group == 'cat:enemy':
             Project2D.DEATH_SE.set_volume(60)
             Project2D.DEATH_SE.play()
-            game_framework.change_state(death)
+            self.death_cat = True
         elif group == 'cat:rocket':
             Project2D.DEATH_SE.set_volume(60)
             Project2D.DEATH_SE.play()
-            game_framework.change_state(death)
+            self.death_cat = True
         elif group == 'cat:turtle':
             Project2D.DEATH_SE.set_volume(60)
             Project2D.DEATH_SE.play()
-            game_framework.change_state(death)
+            self.death_cat = True
         elif group == 'cat:air':
             Project2D.DEATH_SE.set_volume(60)
             Project2D.DEATH_SE.play()
-            game_framework.change_state(death)
+            self.death_cat = True
         elif group == 'cat:BOMB':
-            game_framework.change_state(death)
+            self.death_cat = True
         elif group == 'cat:grass': # 고쳐야한다 각 grass마다 크기가 달라서
             # 대충 이런식으로 바꿔나갈듯 (하나 하나씩 바꿔나가면 될듯)
             # if other.crash_number == 99:
@@ -388,6 +450,26 @@ class Cat:
             if other.crash_number == 7:
                 flagpos.flag_pos_x, flagpos.flag_pos_y, flagpos.flag_camera_pos = self.x + Project2D.camera, self.y, self.camera_x
 
+            elif other.crash_number == 55:
+                self.clear_Sound.set_volume(60)
+                self.clear_Sound.play()
+                self.clear_pos = True
+                pass
+            elif other.crash_number == 66:
+                Project2D.DEATH_SE.set_volume(60)
+                Project2D.DEATH_SE.play()
+                self.death_cat = True
+                pass
+        elif group == 'cat:item':
+            if other.crash_number == 20:
+                self.power_up = True
+            if other.crash_number == 43:
+                Project2D.DEATH_SE.set_volume(60)
+                Project2D.DEATH_SE.play()
+                self.death_cat = True
+
+
+
         pass
 
     def handle_collision2(self, other, group):
@@ -402,16 +484,24 @@ class Cat:
             Project2D.tok_se.set_volume(60)
             Project2D.tok_se.play()
         if group == 'cat:grass':
-            self.gravity = 0
+            if not self.power_up:
+                self.gravity = 0
+
+        if other.crash_number == 66:
+            Project2D.DEATH_SE.set_volume(60)
+            Project2D.DEATH_SE.play()
+            self.death_cat = True
+            pass
 
 
         if group == 'cat:rocket':
-            game_framework.change_state(death)
+            self.death_cat = True
+
         if group == 'cat:air':
-            game_framework.change_state(death)
+            self.death_cat = True
 
         if group == 'cat:BOMB':
-            game_framework.change_state(death)
+            self.death_cat = True
 
         pass
 

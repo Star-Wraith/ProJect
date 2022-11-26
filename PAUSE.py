@@ -6,9 +6,10 @@ import Project2D
 
 image = None
 
+
 def enter():
     global image
-    image = load_image('pause.png')
+    image = load_image('./res/pause.png')
 
     pass
 

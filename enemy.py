@@ -76,14 +76,14 @@ class Enemy_roket:
 
     def handle_collision(self, other, group):
         print('닿음')
-        if group == 'cat:rocket':
-            game_world.game_world_clear()
+        # if group == 'cat:rocket':
+        #     game_world.game_world_clear()
         pass
 
     def handle_collision2(self, other, group):
         pass
 
-class Enemy_BOMB: # 수정 필요?
+class Enemy_BOMB:
     def __init__(self, x, y):  # 생성자
         self.image = load_image('./res/BOMB.png')
         self.x = x
@@ -98,9 +98,6 @@ class Enemy_BOMB: # 수정 필요?
 
     def update(self):
 
-        if self.y < 0:
-            game_framework.change_state(death)
-            game_world.game_world_clear()
 
         self.y += 2 * self.dir * SPEED_ROKET_PPS * game_framework.frame_time
 
@@ -114,14 +111,12 @@ class Enemy_BOMB: # 수정 필요?
         return self.x - 400 - Project2D.camera, self.y - 200, self.x + 400 - Project2D.camera, self.y + 200
 
     def handle_collision(self, other, group):
-        if group == 'cat:BOMB':
-            game_world.remove_object(self)
-            game_world.game_world_clear()
+        # if group == 'cat:BOMB':
+        #     game_world.game_world_clear()
         pass
 
     def handle_collision2(self, other, group):
         # if group == 'cat:BOMB':
-        #     game_world.remove_object(self)
         #     game_world.game_world_clear()
         pass
 
@@ -197,9 +192,7 @@ class Enemy_normal:
 
     def handle_collision(self, other, group):
         print('닿음')
-        if group == 'cat:enemy':
-            game_world.game_world_clear()
-        elif group == 'enemy:grass':
+        if group == 'enemy:grass':
                 if self.dir == 1:
                     self.dir = -1
                 else:
@@ -256,9 +249,9 @@ class Enemy_turtle:
 
     def handle_collision(self, other, group):
         print('닿음')
-        if group == 'cat:turtle':
-            game_world.game_world_clear()
-        elif group == 'turtle:grass':
+        # if group == 'cat:turtle':
+        #     game_world.game_world_clear()
+        if group == 'turtle:grass':
             if self.dir == 1:
                 self.dir = -1
             else:
@@ -310,7 +303,6 @@ class Enemy_air:
 
     def handle_collision(self, other, group):
         print('닿음')
-        if group == 'cat:air':
-            game_world.game_world_clear()
+        # if group == 'cat:air':
+        #     game_world.game_world_clear()
         pass
-

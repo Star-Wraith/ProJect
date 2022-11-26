@@ -20,7 +20,7 @@ class Coin:
     def __init__(self, x, y):  # 생성자
         self.image = load_image('./res/item.PNG')
         self.x = x
-        self.y = y + 60
+        self.y = y + 40
 
         # 충돌 넘버
         self.crash_number = 0
@@ -45,4 +45,101 @@ class Coin:
         pass
 
     def handle_collision2(self, other, group):
+        pass
+
+
+class Red_mushroom:
+    def __init__(self, x, y):  # 생성자
+        self.image = load_image('./res/item.PNG')
+        self.x = x
+        self.y = y + 20
+
+
+        # 충돌 넘버
+        self.crash_number = 20
+
+        self.up = 0
+
+
+
+
+    def draw(self):
+        self.image.clip_draw(40, 0, 40, 40, self.x - Project2D.camera, self.y)
+        draw_rectangle(*self.get_bb())
+
+    def update(self):
+        if self.up < 10 * game_framework.frame_time :
+
+            self.up += game_framework.frame_time
+            self.y += 2
+
+        if self.x - Project2D.camera < 0:
+            game_world.remove_object(self)
+
+        # if self.y < - 80:
+        #     game_world.remove_object(self)
+
+        pass
+
+    def get_bb(self):
+        return self.x - 20 - Project2D.camera, self.y - 20, self.x + 20 - Project2D.camera, self.y + 20
+
+    def handle_collision(self, other, group):
+        if group == 'cat:item':
+            game_world.remove_object(self)
+
+        pass
+
+    def handle_collision2(self, other, group):
+        if group == 'cat:item':
+            game_world.remove_object(self)
+
+        pass
+
+class Poison_mushroom:
+    def __init__(self, x, y):  # 생성자
+        self.image = load_image('./res/item.PNG')
+        self.x = x
+        self.y = y + 20
+
+
+        # 충돌 넘버
+        self.crash_number = 43
+
+        self.up = 0
+
+
+
+
+    def draw(self):
+        self.image.clip_draw(80, 0, 40, 40, self.x - Project2D.camera, self.y)
+        draw_rectangle(*self.get_bb())
+
+    def update(self):
+        if self.up < 10 * game_framework.frame_time :
+
+            self.up += game_framework.frame_time
+            self.y += 2
+
+        if self.x - Project2D.camera < 0:
+            game_world.remove_object(self)
+
+        # if self.y < - 80:
+        #     game_world.remove_object(self)
+
+        pass
+
+    def get_bb(self):
+        return self.x - 20 - Project2D.camera, self.y - 20, self.x + 20 - Project2D.camera, self.y + 20
+
+    def handle_collision(self, other, group):
+        if group == 'cat:item':
+            game_world.remove_object(self)
+
+        pass
+
+    def handle_collision2(self, other, group):
+        if group == 'cat:item':
+            game_world.remove_object(self)
+
         pass
