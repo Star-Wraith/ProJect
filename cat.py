@@ -29,6 +29,10 @@ class IDLE:
         if event == JUMP and self.jump_state == False:
             # self.jump_flag = 1
             # self.jump = self.y
+
+            self.jump_Sound.set_volume(60)
+            self.jump_Sound.play()
+
             self.jump_state = True
             self.jump_s = 100
             self.gravity = RUN_SPEED_PPS * game_framework.frame_time
@@ -162,6 +166,13 @@ class RUN:
             print("여기!!")
             Cat.death(self)
 
+        if self.dir != 0:
+            self.face_dir_run = self.dir
+
+
+
+
+
 
 
         #
@@ -208,12 +219,12 @@ class RUN:
             self.image.clip_draw(3 * 48, 1, 46, 70, self.x, self.y)
         elif self.power_up:
             self.image_power.clip_draw(0, 0, 128, 220, self.x, self.y)
-        elif self.dir == 1:
+        elif self.face_dir_run == 1:
             if self.jump_state == True or self.gravity != 0:
                 self.image.clip_draw(2 * 49, 1, 46, 70, self.x, self.y)
             else:
                 self.image.clip_draw(int(self.frame) * 49, 1, 46, 70, self.x, self.y)
-        elif self.dir == -1:
+        elif self.face_dir_run:
             if  self.jump_state == True or self.gravity != 0:
                 self.image2.clip_draw(186 - 46 * 2, 1, 46, 70, self.x, self.y)
             else:
@@ -228,8 +239,8 @@ class RUN:
 #3. 상태 변환 구현
 
 next_state = {
-    IDLE:  {RU: RUN,  LU: RUN,  RD: RUN,  LD: RUN, JUMP: RUN},
-    RUN:   {RU: IDLE, LU: IDLE, RD: IDLE, LD: IDLE, JUMP: RUN}
+    IDLE:  {RU: RUN,  LU: RUN,  RD: RUN,  LD: RUN},
+    RUN:   {RU: IDLE, LU: IDLE, RD: IDLE, LD: IDLE}
 }
 
 TIME_PER_ACTION = 0.5
@@ -254,6 +265,7 @@ class Cat:
         self.y = y
         self.frame = 0
         self.face_dir = 1
+        self.face_dir_run = self.face_dir
         self.dir = 0
         self.camera_x = camera_pos # 카메라 구현 대기중
         self.speed = 1
@@ -364,7 +376,7 @@ class Cat:
         self.cur_state.draw(self)
         draw_rectangle(*self.get_bb())
 
-    def JUMP(self): # jump 이쪽으로 옮길 필요 있음
+    def JUMP(self):
         if self.jump_s > 0:
             self.y += self.jump_s * self.speed * RUN_SPEED_PPS * game_framework.frame_time/100
             self.jump_s -= RUN_SPEED_PPS * game_framework.frame_time/5
@@ -378,19 +390,6 @@ class Cat:
                     self.jump_state = False
                     self.jump_count = False
 
-
-
-
-        # if self.jump_flag == 1:
-        #     if self.y < self.jump + 200:
-        #         self.y += 1
-        #     else:
-        #         self.jump_flag = 2
-        # if self.jump_flag == 2:
-        #     if self.y > self.jump:
-        #         self.y -= 1
-        #     else:
-        #         self.jump_flag = 0
 
         pass
 
@@ -414,14 +413,6 @@ class Cat:
             return 1000, 1000, 1000, 1000
         return self.x - 20, self.y - 40, self.x + 20, self.y + 40
 
-    # def death_motion(self):
-    #     self.death_pos = self.y + 100
-    #     self.image.clip_draw(3 * 49, 1, 46, 70, self.x, self.y)
-    #     delay(0.5)
-    #     # while self.y <= self.death_pos:
-    #     #     self.y += RUN_SPEED_PPS * game_framework.frame_time
-    #     # while self.y >= -50:
-    #     #     self.y -= RUN_SPEED_PPS * game_framework.frame_time
 
 
     def handle_collision(self, other, group):
@@ -454,10 +445,7 @@ class Cat:
             Project2D.DEATH_SE.play()
             self.death_cat = True
 
-        elif group == 'cat:grass': # 고쳐야한다 각 grass마다 크기가 달라서
-            # 대충 이런식으로 바꿔나갈듯 (하나 하나씩 바꿔나가면 될듯)
-            # if other.crash_number == 99:
-            #     other.y += 100
+        elif group == 'cat:grass':
             if self.x + 20 < other.x - Project2D.camera:
                 self.x -= 5
             elif self.x - 20 > other.x - Project2D.camera:
@@ -521,7 +509,6 @@ class Cat:
         pass
 
     def handle_collision2(self, other, group):
-        # Cat.death_motion(self)
         if group == 'cat:enemy':
             self.y += 50
             Project2D.tok_se.set_volume(60)
@@ -572,8 +559,3 @@ class Cat:
                 self.camera_x += 1 * RUN_SPEED_PPS * game_framework.frame_time
                 # print(self.camera_x)
         return self.camera_x
-
-# 해야 될 것
-# 적들 위치 선정 (완)
-# 점프 고치기 (실패)
-# 각종 상호작용들 (아주 약간)
