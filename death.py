@@ -5,10 +5,12 @@ import game_world
 import title
 image = None
 font = None
-DEATH = 3 # 죽은 횟수
+DEATH = 3 # 목숨
+DEATH_COUNT = 0 # 죽은 횟수
 def enter():
-    global image, DEATH, font, SE
+    global image, DEATH, font, SE, DEATH_COUNT
     DEATH -= 1
+    DEATH_COUNT += 1
     if DEATH < -99:
         DEATH = -99
     image = load_image('./res/death.png')
@@ -42,6 +44,7 @@ def draw():
     clear_canvas()
     image.draw(400, 300)
     font.draw(450, 300, f'{DEATH}', (255, 255, 255)) # 죽은 횟수 표시
+    # font.draw(220, 100, 'press space bar', (255, 255, 0))
     update_canvas()
     pass
 def update():

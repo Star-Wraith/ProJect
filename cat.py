@@ -5,6 +5,7 @@ import death
 import game_world
 import Project2D
 import flagpos
+import all_clear
 
 RD, LD, RU, LU, JUMP = range(5)
 event_name = ['RD', 'LD', 'RU', 'LU', 'JUMP']
@@ -266,7 +267,9 @@ class Cat:
         self.jump_flag = 0
 
         self.jump_Sound = load_music('./SE/jump.mp3')
+        self.Star_Sound = load_music('./SE/powerup.mp3')
         self.clear_Sound = load_music('./SE/goal.mp3')
+        self.brock_Sound = load_music('./SE/brockcoin.mp3')
 
         self.jump_state = False
         self.gravity = 2 * RUN_SPEED_PPS * game_framework.frame_time
@@ -328,6 +331,7 @@ class Cat:
         # self.frame = self.frame % 2
     def death(self): # 여기 하는중
         if self.yPlus < 200:
+            # self.power_up = False
             self.y += RUN_SPEED_PPS * game_framework.frame_time
             self.yPlus += RUN_SPEED_PPS * game_framework.frame_time
         elif self.y > - 400:
@@ -343,7 +347,15 @@ class Cat:
             self.clear_time += game_framework.frame_time
         else:
             flagpos.stage_number += 1
-            game_framework.change_state(death) # 2 Stage로 변경
+            flagpos.flag_camera_pos = None
+            flagpos.flag_pos_x = None
+            flagpos.flag_pos_y = None
+            flagpos.flag_live = False
+            game_world.game_world_clear()
+            if flagpos.stage_number <= 2:
+                game_framework.change_state(death) # 2 Stage로 변경
+            else:
+                game_framework.change_state(all_clear)
 
 
 
@@ -431,8 +443,17 @@ class Cat:
             Project2D.DEATH_SE.set_volume(60)
             Project2D.DEATH_SE.play()
             self.death_cat = True
+        elif group == 'cat:fireball':
+            Project2D.DEATH_SE.set_volume(60)
+            Project2D.DEATH_SE.play()
+            self.death_cat = True
         elif group == 'cat:BOMB':
             self.death_cat = True
+        elif group == 'cat:cloakman':
+            Project2D.DEATH_SE.set_volume(60)
+            Project2D.DEATH_SE.play()
+            self.death_cat = True
+
         elif group == 'cat:grass': # 고쳐야한다 각 grass마다 크기가 달라서
             # 대충 이런식으로 바꿔나갈듯 (하나 하나씩 바꿔나가면 될듯)
             # if other.crash_number == 99:
@@ -460,13 +481,40 @@ class Cat:
                 Project2D.DEATH_SE.play()
                 self.death_cat = True
                 pass
+            elif other.crash_number == 20:
+                Project2D.DEATH_SE.set_volume(60)
+                Project2D.DEATH_SE.play()
+                self.death_cat = True
+                pass
+            elif other.crash_number == 19:
+                Project2D.DEATH_SE.set_volume(60)
+                Project2D.DEATH_SE.play()
+                self.death_cat = True
+            elif other.crash_number == 22:
+                Project2D.Bye_bgm.set_volume(60)
+                Project2D.Bye_bgm.repeat_play()
+                self.death_cat = True
+                pass
         elif group == 'cat:item':
             if other.crash_number == 20:
                 self.power_up = True
+                self.Star_Sound.set_volume(60)
+                self.Star_Sound.play()
             if other.crash_number == 43:
                 Project2D.DEATH_SE.set_volume(60)
                 Project2D.DEATH_SE.play()
                 self.death_cat = True
+            if other.crash_number == 76:
+                self.Star_Sound.set_volume(60)
+                self.Star_Sound.play()
+                self.death_cat = True
+            if other.crash_number == 13:
+                for i in range(len(Project2D.grass)):
+                    Project2D.grass[i].cash = True
+
+                self.brock_Sound.set_volume(60)
+                self.brock_Sound.play()
+
 
 
 
@@ -483,6 +531,15 @@ class Cat:
             self.y += 50
             Project2D.tok_se.set_volume(60)
             Project2D.tok_se.play()
+        if group == 'cat:turtle_down':
+            self.y += 50
+            Project2D.tok_se.set_volume(60)
+            Project2D.tok_se.play()
+        if group == 'cat:cloakman':
+            self.y += 200
+            Project2D.tok_se.set_volume(60)
+            Project2D.tok_se.play()
+
         if group == 'cat:grass':
             if not self.power_up:
                 self.gravity = 0
@@ -493,11 +550,13 @@ class Cat:
             self.death_cat = True
             pass
 
-
         if group == 'cat:rocket':
             self.death_cat = True
 
         if group == 'cat:air':
+            self.death_cat = True
+
+        if group == 'cat:fireball':
             self.death_cat = True
 
         if group == 'cat:BOMB':

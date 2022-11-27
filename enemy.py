@@ -136,12 +136,6 @@ class Enemy_normal:
         self.crash_number = 0
 
     def update(self):
-        # while self.y > 0:
-        #     self.count += 1
-        #     if count % 10 == 0:
-        #         self.y -= 1
-        # self.x += self.dir * 1/3
-        # self.x += self.dir * SPEED_NORMAL_PPS * game_framework.frame_time
         if self.xPos == False:
             # self.x += self.dir * SPEED_NORMAL_PPS * game_framework.frame_time
             if self.gravity == 0:
@@ -220,11 +214,6 @@ class Enemy_turtle:
         self.crash_number = 0
 
     def update(self):
-        # while self.y > 0:
-        #     self.count += 1
-        #     if count % 10 == 0:
-        #         self.y -= 1
-        # self.x += self.dir * 1/3
         self.x += self.dir * SPEED_TURTLE_PPS * game_framework.frame_time
 
         if self.x - Project2D.camera > self.x_max - Project2D.camera and self.dir != 3:
@@ -280,10 +269,7 @@ class Enemy_air:
         self.crash_number = 0
 
     def update(self):
-        # while self.y > 0:
-        #     self.count += 1
-        #     if count % 10 == 0:
-        #         self.y -= 1
+
         if self.xPos <= Project2D.camera:
             self.x += self.dir * SPEED_AIR_PPS * game_framework.frame_time
 
@@ -306,3 +292,136 @@ class Enemy_air:
         # if group == 'cat:air':
         #     game_world.game_world_clear()
         pass
+
+
+class Enemy_fireball:
+    def __init__(self, x, y, xPos):  # 생성자
+        self.image = load_image('./res/fireball.png')
+        self.x = x
+        self.y = y
+        self.xPos = xPos
+
+        # 충돌 넘버
+        self.crash_number = 0
+
+    def update(self):
+        if self.xPos <= Project2D.camera:
+            self.x -= 2 * SPEED_AIR_PPS * game_framework.frame_time
+
+        if self.x - Project2D.camera < -30 or self.y < -30:
+            game_world.remove_object(self)
+            print('지우기 성공')
+
+
+    def draw(self):
+        self.image.clip_draw(0, 0, 57, 46, self.x - Project2D.camera, self.y)
+
+    def get_bb(self):
+        return self.x - 28 - Project2D.camera, self.y - 23, self.x + 28 - Project2D.camera, self.y + 23
+
+    def handle_collision(self, other, group):
+        print('닿음')
+        # if group == 'cat:air':
+        #     game_world.game_world_clear()
+        pass
+
+
+
+class Enemy_cloakman:
+    def __init__(self, x, y):  # 생성자
+        self.image = load_image('./res/cloakman.png')
+        self.x = x
+        self.y = y
+        self.dir = 1
+        self.gravity = 0
+
+        # 충돌 넘버
+        self.crash_number = 0
+
+    def update(self):
+            # self.x += self.dir * SPEED_NORMAL_PPS * game_framework.frame_time
+        if not self.gravity:
+            self.y += self.dir * 1 * SPEED_NORMAL_PPS * game_framework.frame_time
+            if self.y > 400:
+                self.dir = -1
+            elif self.y < 200:
+                self.dir = 1
+        if self.x - Project2D.camera < -100 or self.y < -100:
+            game_world.remove_object(self)
+            print('지우기 성공')
+        self.y -= self.gravity
+
+    def draw(self):
+        if not self.gravity:
+            self.image.clip_draw(0, 0, 83, 134, self.x - Project2D.camera, self.y)
+        elif self.gravity:
+            self.image.clip_draw(83, 0, 83, 134, self.x - Project2D.camera, self.y)
+        draw_rectangle(*self.get_bb())
+
+    def get_bb(self):
+        return self.x - 41 - Project2D.camera, self.y - 67, self.x + 41 - Project2D.camera, self.y + 67
+
+    def handle_collision(self, other, group):
+
+        pass
+
+    def handle_collision2(self, other, group):
+        print('tkdatdawtaaawwatgwawa')
+        if group == 'cat:cloakman':
+            self.gravity = 3 * SPEED_NORMAL_PPS * game_framework.frame_time
+        pass
+
+# class Enemy_turtle_down:
+#     def __init__(self, x, y, pos=False):  # 생성자
+#         self.image = load_image('./res/enemy.png')
+#         self.image2 = load_image('./res/enemyRe.png')
+#         self.x = x
+#         self.y = y
+#         self.dir = -1
+#         self.xPos = pos
+#         self.gravity = 0
+#
+#         # 충돌 넘버
+#         self.crash_number = 25
+#
+#     def update(self):
+#
+#         if self.x - Project2D.camera < -30 or self.y < -40:
+#             game_world.remove_object(self)
+#             print('지우기 성공')
+#         if self.xPos <= Project2D.camera:
+#             if self.gravity == 0:
+#                 self.x += self.dir * SPEED_TURTLE_PPS * game_framework.frame_time
+#
+#             if self.x - Project2D.camera < -20 or self.y < -20:
+#                 game_world.remove_object(self)
+#                 print('지우기 성공')
+#             self.y -= self.gravity
+#             if self.gravity == 0:
+#                 self.gravity = 2 * SPEED_TURTLE_PPS * game_framework.frame_time
+#
+#     def draw(self):
+#
+#         if self.dir == -1:
+#             self.image.clip_draw(55, 8, 55, 76, self.x - Project2D.camera, self.y)
+#         elif self.dir == 0 or self.dir == 3:
+#             self.image.clip_draw(115, 51, 53, 58, self.x - Project2D.camera, self.y)
+#
+#
+#     def get_bb(self):
+#         return self.x - 27 - Project2D.camera, self.y - 38, self.x + 27 - Project2D.camera, self.y + 38
+#
+#     def handle_collision(self, other, group):
+#         print('닿음')
+#
+#         pass
+#
+#     def handle_collision2(self, other, group):
+#         if group == 'cat:turtle_down' and self.dir == 0:
+#             self.dir = 3
+#         if group == 'cat:turtle_down' and self.dir != 3:
+#             self.y -= 9
+#             self.dir = 0
+#         if group == 'turtle_down:grass':
+#             self.gravity = 0
+#         pass

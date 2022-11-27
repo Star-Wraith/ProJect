@@ -6,4 +6,4 @@ flag_camera_pos = None
 flag_live = False
 
 # stage
-stage_number = 2
+stage_number = 1

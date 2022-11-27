@@ -147,6 +147,16 @@ def map_read():
                 # map_mapping.append = grass.Grass(Pos_x, Pos_y)
                 map_mapping.append(i)
 
+            elif map_choice[y][x] == 20:
+                i = grass.Chicken_enemy(Pos_x, Pos_y)
+                # map_mapping.append = grass.Grass(Pos_x, Pos_y)
+                map_mapping.append(i)
+
+            elif map_choice[y][x] == 25:
+                i = grass.SWITCH_Picachu(Pos_x, Pos_y)
+                # map_mapping.append = grass.Grass(Pos_x, Pos_y)
+                map_mapping.append(i)
+
 
 
 
