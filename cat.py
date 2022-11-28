@@ -483,6 +483,7 @@ class Cat:
                 Project2D.Bye_bgm.repeat_play()
                 self.death_cat = True
                 pass
+
         elif group == 'cat:item':
             if other.crash_number == 20:
                 self.power_up = True
@@ -531,10 +532,14 @@ class Cat:
             if not self.power_up:
                 self.gravity = 0
 
+
         if other.crash_number == 66:
             Project2D.DEATH_SE.set_volume(60)
             Project2D.DEATH_SE.play()
             self.death_cat = True
+            pass
+        elif other.crash_number == 9:
+            self.gravity = RUN_SPEED_PPS * game_framework.frame_time
             pass
 
         if group == 'cat:rocket':
