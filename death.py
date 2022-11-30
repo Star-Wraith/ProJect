@@ -8,7 +8,8 @@ font = None
 DEATH = 3 # 목숨
 DEATH_COUNT = 0 # 죽은 횟수
 def enter():
-    global image, DEATH, font, SE, DEATH_COUNT
+    global image, DEATH, font, SE, DEATH_COUNT, wait_time
+    wait_time = 0
     DEATH -= 1
     DEATH_COUNT += 1
     if DEATH < -99:
