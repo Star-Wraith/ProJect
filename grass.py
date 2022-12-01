@@ -36,14 +36,14 @@ class Grass:
         # 충돌 넘버
         self.crash_number = 1
 
-        self.break_Sound = load_music('./SE/brockbreak.mp3')
+        self.break_Sound = load_wav('./SE/brockbreak.wav')
 
         self.cash = False
 
 
     def draw(self):
         self.image.clip_draw(0, 0, 40, 40, self.x - Project2D.camera, self.y)
-        draw_rectangle(*self.get_bb())
+        # draw_rectangle(*self.get_bb())
 
 
     def update(self):
@@ -90,8 +90,8 @@ class Block_QM:
         # 충돌 넘버
         self.crash_number = 2
 
-        self.brock_Sound = load_music('./SE/brockcoin.mp3')
-        self.break_Sound = load_music('./SE/brockbreak.mp3')
+        self.brock_Sound = load_wav('./SE/brockcoin.wav')
+        self.break_Sound = load_wav('./SE/brockbreak.wav')
 
         self.cash = False
 
@@ -100,7 +100,7 @@ class Block_QM:
             self.image.clip_draw(0, 0, 40, 40, self.x - Project2D.camera, self.y)
         if self.block_type:
             self.image2.clip_draw(0, 0, 40, 40, self.x - Project2D.camera, self.y)
-        draw_rectangle(*self.get_bb())
+        # draw_rectangle(*self.get_bb())
 
     def update(self):
 
@@ -156,8 +156,8 @@ class Block_Shadow:
 
         self.cash = False
 
-        self.brock_Sound = load_music('./SE/brockcoin.mp3')
-        self.break_Sound = load_music('./SE/brockbreak.mp3')
+        self.brock_Sound = load_wav('./SE/brockcoin.wav')
+        self.break_Sound = load_wav('./SE/brockbreak.wav')
 
 
 
@@ -165,7 +165,7 @@ class Block_Shadow:
         if self.block_type:
             self.image.clip_draw(0, 0, 40, 40, self.x - Project2D.camera, self.y)
 
-        draw_rectangle(*self.get_bb())
+        # draw_rectangle(*self.get_bb())
 
 
     def update(self):
@@ -235,7 +235,7 @@ class Mountain:
 
     def draw(self):
         self.image.clip_draw(0, 314, 298, 182, self.x - Project2D.camera, self.y)
-        draw_rectangle(*self.get_bb())
+        # draw_rectangle(*self.get_bb())
 
     def update(self):
         pass
@@ -264,7 +264,7 @@ class Cloud:
 
     def draw(self):
         self.image.clip_draw(303, 354, 138, 80, self.x - Project2D.camera, self.y)
-        draw_rectangle(*self.get_bb())
+        # draw_rectangle(*self.get_bb())
 
     def update(self):
         pass
@@ -294,7 +294,7 @@ class Cloudsmall:
 
     def draw(self):
         self.image.clip_draw(302, 212, 101, 58, self.x - Project2D.camera, self.y)
-        draw_rectangle(*self.get_bb())
+        # draw_rectangle(*self.get_bb())
 
     def update(self):
         pass
@@ -327,7 +327,7 @@ class Cloud_enemy:
     def draw(self):
         if self.block_type:
             self.image.clip_draw(303, 272, 138, 80, self.x - Project2D.camera, self.y)
-        draw_rectangle(*self.get_bb())
+        # draw_rectangle(*self.get_bb())
 
     def update(self):
         pass
@@ -362,7 +362,7 @@ class Flag:
 
     def draw(self):
         self.image.clip_draw(0, 6, 67, 124, self.x - Project2D.camera, self.y)
-        draw_rectangle(*self.get_bb())
+        # draw_rectangle(*self.get_bb())
 
     def update(self):
         if flagpos.flag_live:
@@ -397,7 +397,7 @@ class JUMP_Bar:
 
     def draw(self):
         self.image.clip_draw(357, 8, 47, 49, self.x - Project2D.camera, self.y)
-        draw_rectangle(*self.get_bb())
+        # draw_rectangle(*self.get_bb())
 
     def update(self):
 
@@ -432,11 +432,11 @@ class Block_Drop:
         # 충돌 넘버
         self.crash_number = 9
 
-        self.break_Sound = load_music('./SE/brockbreak.mp3')
+        self.break_Sound = load_wav('./SE/brockbreak.wav')
 
     def draw(self):
         self.image.clip_draw(0, 0, 40, 80, self.x - Project2D.camera, self.y)
-        draw_rectangle(*self.get_bb())
+        # draw_rectangle(*self.get_bb())
 
     def update(self):
         self.y -= self.speed
@@ -478,8 +478,8 @@ class Block_RM:
         self.block_type = False
         self.cash = False
 
-        self.brock_Sound = load_music('./SE/dokan.mp3')
-        self.break_Sound = load_music('./SE/brockbreak.mp3')
+        self.brock_Sound = load_wav('./SE/dokan.wav')
+        self.break_Sound = load_wav('./SE/brockbreak.wav')
         # 충돌 넘버
         self.crash_number = 21
 
@@ -539,8 +539,8 @@ class Block_PM:
 
         self.block_type = False
 
-        self.brock_Sound = load_music('./SE/dokan.mp3')
-        self.break_Sound = load_music('./SE/brockbreak.mp3')
+        self.brock_Sound = load_wav('./SE/dokan.wav')
+        self.break_Sound = load_wav('./SE/brockbreak.wav')
 
         # 충돌 넘버
         self.crash_number = 44
@@ -551,7 +551,7 @@ class Block_PM:
         if self.block_type:
             self.image2.clip_draw(0, 0, 40, 40, self.x - Project2D.camera, self.y)
 
-        draw_rectangle(*self.get_bb())
+        # draw_rectangle(*self.get_bb())
 
     def update(self):
         pass
@@ -601,8 +601,8 @@ class Block_STAR:
 
         self.block_type = False
 
-        self.brock_Sound = load_music('./SE/dokan.mp3')
-        self.break_Sound = load_music('./SE/brockbreak.mp3')
+        self.brock_Sound = load_wav('./SE/dokan.wav')
+        self.break_Sound = load_wav('./SE/brockbreak.wav')
 
         # 충돌 넘버
         self.crash_number = 77
@@ -613,7 +613,7 @@ class Block_STAR:
         if self.block_type:
             self.image2.clip_draw(0, 0, 40, 40, self.x - Project2D.camera, self.y)
 
-        draw_rectangle(*self.get_bb())
+        # draw_rectangle(*self.get_bb())
 
     def update(self):
         pass
@@ -664,8 +664,8 @@ class Block_Switch:
 
         self.block_type = False
 
-        self.brock_Sound = load_music('./SE/dokan.mp3')
-        self.break_Sound = load_music('./SE/brockbreak.mp3')
+        self.brock_Sound = load_wav('./SE/dokan.wav')
+        self.break_Sound = load_wav('./SE/brockbreak.wav')
 
         # 충돌 넘버
         self.crash_number = 12
@@ -676,7 +676,7 @@ class Block_Switch:
         if self.block_type:
             self.image2.clip_draw(0, 0, 40, 40, self.x - Project2D.camera, self.y)
 
-        draw_rectangle(*self.get_bb())
+        # draw_rectangle(*self.get_bb())
 
     def update(self):
 
@@ -731,7 +731,7 @@ class TREE:
         self.crash_number = 88
     def draw(self):
         self.image.clip_draw(504, 373, 60, 121, self.x - Project2D.camera, self.y)
-        draw_rectangle(*self.get_bb())
+        # draw_rectangle(*self.get_bb())
 
     def update(self):
         pass
@@ -758,7 +758,7 @@ class SWITCH:
         self.crash_number = 10
     def draw(self):
         self.image.clip_draw(0, 0, 80, 80, self.x - Project2D.camera, self.y)
-        draw_rectangle(*self.get_bb())
+        # draw_rectangle(*self.get_bb())
 
     def update(self):
         pass
@@ -809,7 +809,7 @@ class SWITCH_COIN:
         self.crash_number = 10
     def draw(self):
         self.image.clip_draw(0, 0, 80, 80, self.x - Project2D.camera, self.y)
-        draw_rectangle(*self.get_bb())
+        # draw_rectangle(*self.get_bb())
 
     def update(self):
         pass
@@ -856,13 +856,13 @@ class Roof:
 
         self.cash = False
 
-        self.break_Sound = load_music('./SE/brockbreak.mp3')
+        self.break_Sound = load_wav('./SE/brockbreak.wav')
 
         # 충돌 넘버
         self.crash_number = 11
     def draw(self):
         self.image.clip_draw(0, 0, 120, 160, self.x - Project2D.camera, self.y)
-        draw_rectangle(*self.get_bb())
+        # draw_rectangle(*self.get_bb())
 
     def update(self):
         pass
@@ -900,7 +900,7 @@ class Leaf:
         self.crash_number = 33
     def draw(self):
         self.image.clip_draw(302, 436, 116, 62, self.x - Project2D.camera, self.y)
-        draw_rectangle(*self.get_bb())
+        # draw_rectangle(*self.get_bb())
 
     def update(self):
         pass
@@ -925,14 +925,14 @@ class Bong:
         self.crash_number = 55
     def draw(self):
         self.image.clip_draw(0, 0, 40, 440, self.x - Project2D.camera, self.y)
-        draw_rectangle(*self.get_bb())
+        # draw_rectangle(*self.get_bb())
 
     def update(self):
         pass
 
 
     def get_bb(self):
-        return self.x - 20 - Project2D.camera, self.y - 220, self.x + 20 - Project2D.camera, self.y + 220
+        return self.x - 10 - Project2D.camera, self.y - 220, self.x + 10 - Project2D.camera, self.y + 220
 
     def handle_collision(self, other, group):
         pass
@@ -959,7 +959,7 @@ class Bong_Enemy:
             self.image.clip_draw(0, 0, 40, 440, self.x - Project2D.camera, self.y)
         else:
             self.image2.clip_draw(0, 0, 40, 440, self.x - Project2D.camera, self.y)
-        draw_rectangle(*self.get_bb())
+        # draw_rectangle(*self.get_bb())
 
     def update(self):
         pass
@@ -988,7 +988,7 @@ class Clear_Door:
         self.crash_number = 56
     def draw(self):
         self.image.clip_draw(0, 133, 198, 180, self.x - Project2D.camera, self.y)
-        draw_rectangle(*self.get_bb())
+        # draw_rectangle(*self.get_bb())
 
     def update(self):
         pass
@@ -1016,7 +1016,7 @@ class Block_UP:
     def draw(self):
 
         self.image.clip_draw(0, 0, 40, 40, self.x - Project2D.camera, self.y)
-        draw_rectangle(*self.get_bb())
+        # draw_rectangle(*self.get_bb())
 
 
     def update(self):
@@ -1047,12 +1047,12 @@ class Grass_Ver2:
 
         self.cash = False
 
-        self.break_Sound = load_music('./SE/brockbreak.mp3')
+        self.break_Sound = load_wav('./SE/brockbreak.wav')
 
 
     def draw(self):
         self.image.clip_draw(0, 0, 40, 40, self.x - Project2D.camera, self.y)
-        draw_rectangle(*self.get_bb())
+        # draw_rectangle(*self.get_bb())
 
 
     def update(self):
@@ -1100,12 +1100,12 @@ class Block_UP_DOWN:
         # 충돌 넘버
         self.crash_number = 19
 
-        self.break_Sound = load_music('./SE/brockbreak.mp3')
+        self.break_Sound = load_wav('./SE/brockbreak.wav')
 
 
     def draw(self):
         self.image.clip_draw(0, 0, 40, 40, self.x - Project2D.camera, self.y)
-        draw_rectangle(*self.get_bb())
+        # draw_rectangle(*self.get_bb())
 
 
     def update(self):
@@ -1151,7 +1151,7 @@ class Chicken_enemy:
 
     def draw(self):
         self.image.clip_draw(0, 0, 128, 220, self.x - Project2D.camera, self.y)
-        draw_rectangle(*self.get_bb())
+        # draw_rectangle(*self.get_bb())
 
     def update(self):
         pass
@@ -1184,7 +1184,7 @@ class SWITCH_Picachu:
 
     def draw(self):
         self.image.clip_draw(0, 0, 80, 80, self.x - Project2D.camera, self.y)
-        draw_rectangle(*self.get_bb())
+        # draw_rectangle(*self.get_bb())
 
     def update(self):
         pass

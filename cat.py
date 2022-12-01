@@ -23,7 +23,7 @@ key_event_table = {
 class IDLE:
     @staticmethod
     def enter(self, event):
-        print('ENTER IDLE')
+        # print('ENTER IDLE')
         self.dir = 0
         self.timer = 1000
         if event == JUMP and self.jump_state == False:
@@ -38,7 +38,7 @@ class IDLE:
 
     @staticmethod
     def exit(self, event):
-        print('EXIT IDLE')
+        # print('EXIT IDLE')
         self.gravity = RUN_SPEED_PPS * game_framework.frame_time
 
     @staticmethod
@@ -78,7 +78,7 @@ class IDLE:
 
 class RUN:
     def enter(self, event):
-        print('ENTER RUN')
+        # print('ENTER RUN')
         if event == RD:
             self.dir += 1
         elif event == LD:
@@ -99,7 +99,7 @@ class RUN:
 
 
     def exit(self, event):
-        print('EXIT RUN')
+        # print('EXIT RUN')
         self.face_dir = self.dir
         self.gravity = RUN_SPEED_PPS * game_framework.frame_time
 
@@ -122,7 +122,7 @@ class RUN:
             Cat.JUMP(self)
 
         if self.death_cat:
-            print("여기!!")
+            # print("여기!!")
             Cat.death(self)
 
         if self.dir != 0:
@@ -200,10 +200,10 @@ class Cat:
         self.jump = 0
         self.jump_flag = 0
 
-        self.jump_Sound = load_music('./SE/jump.mp3')
-        self.Star_Sound = load_music('./SE/powerup.mp3')
+        self.jump_Sound = load_wav('./SE/jump.wav')
+        self.Powerup_Sound = load_wav('./SE/powerup.wav')
         self.clear_Sound = load_music('./SE/goal.mp3')
-        self.brock_Sound = load_music('./SE/brockcoin.mp3')
+        self.brock_Sound = load_wav('./SE/brockcoin.wav')
 
         self.jump_state = False
         self.gravity = 2 * RUN_SPEED_PPS * game_framework.frame_time
@@ -212,6 +212,7 @@ class Cat:
 
         self.power_up = False   # 빨간 버섯 충돌
         self.death_cat = False
+
 
 
 
@@ -227,6 +228,7 @@ class Cat:
         # 클리어 대기시간
         self.clear_pos = 0
         self.clear_time = 0
+        self.clear_bong_y = False
 
         self.handle_bug_guard = 0
 
@@ -255,8 +257,6 @@ class Cat:
             Project2D.DEATH_SE.set_volume(60)
             Project2D.DEATH_SE.play()
             self.death_cat = True
-            # game_framework.change_state(death)
-            # game_world.game_world_clear()
         elif self.y < -220 and self.death_cat == False:
             Project2D.DEATH_SE.set_volume(60)
             Project2D.DEATH_SE.play()
@@ -275,7 +275,7 @@ class Cat:
             game_world.game_world_clear()
 
     def stage_clear(self):
-        if self.y > 160:
+        if self.y > 160 and not self.clear_bong_y:
             self.y -= RUN_SPEED_PPS * game_framework.frame_time/2
         elif self.clear_time < 1000 * game_framework.frame_time:
             self.clear_time += game_framework.frame_time
@@ -296,7 +296,7 @@ class Cat:
 
     def draw(self):
         self.cur_state.draw(self)
-        draw_rectangle(*self.get_bb())
+        # draw_rectangle(*self.get_bb())
 
     def JUMP(self):
         if self.jump_s > 0:
@@ -345,13 +345,13 @@ class Cat:
             return self.x - 64, self.y - 110, self.x + 64, self.y + 110
         if self.death_cat:
             return 1000, 1000, 1000, 1000
-        return self.x - 20, self.y - 40, self.x + 20, self.y + 40
+        return self.x - 20, self.y - 37, self.x + 20, self.y + 37
 
 
 
     def handle_collision(self, other, group):
         # Cat.death_motion(self)
-        print(group)
+        # print(group)
         if group == 'cat:enemy':
             Project2D.DEATH_SE.set_volume(60)
             Project2D.DEATH_SE.play()
@@ -380,6 +380,7 @@ class Cat:
             self.death_cat = True
 
         elif group == 'cat:grass':
+
             if self.x + 20 < other.x - Project2D.camera:
                 self.x -= 5
             elif self.x - 20 > other.x - Project2D.camera:
@@ -394,6 +395,8 @@ class Cat:
                 flagpos.flag_pos_x, flagpos.flag_pos_y, flagpos.flag_camera_pos = self.x + Project2D.camera, self.y, self.camera_x
 
             elif other.crash_number == 55:
+                if other.x - Project2D.camera - 20 < self.x < other.x - Project2D.camera + 20:
+                    self.clear_bong_y = True
                 self.clear_Sound.set_volume(60)
                 self.clear_Sound.play()
                 self.clear_pos = True
@@ -421,15 +424,15 @@ class Cat:
         elif group == 'cat:item':
             if other.crash_number == 20:
                 self.power_up = True
-                self.Star_Sound.set_volume(60)
-                self.Star_Sound.play()
+                self.Powerup_Sound.set_volume(60)
+                self.Powerup_Sound.play()
             if other.crash_number == 43:
                 Project2D.DEATH_SE.set_volume(60)
                 Project2D.DEATH_SE.play()
                 self.death_cat = True
             if other.crash_number == 76:
-                self.Star_Sound.set_volume(60)
-                self.Star_Sound.play()
+                Project2D.Bye_bgm.set_volume(60)
+                Project2D.Bye_bgm.repeat_play()
                 self.death_cat = True
             if other.crash_number == 13:
                 for i in range(len(Project2D.grass)):
@@ -465,6 +468,13 @@ class Cat:
         if group == 'cat:grass':
             if not self.power_up:
                 self.gravity = 0
+            if other.crash_number == 55:
+                if other.x - Project2D.camera - 20 < self.x < other.x - Project2D.camera + 20:
+                    self.clear_bong_y = True
+                self.clear_Sound.set_volume(60)
+                self.clear_Sound.play()
+                self.clear_pos = True
+                pass
 
 
         if other.crash_number == 66:

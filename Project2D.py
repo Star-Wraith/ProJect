@@ -5,7 +5,6 @@ import game_world
 import read_map
 import flagpos
 import title
-import PAUSE
 # 배경
 from grass import Grass
 from screen import Screen
@@ -83,7 +82,7 @@ def enter():
     enemy_fireball.clear()
     enemy_cloakman.clear()
     Bye_bgm = load_music('./SE/Song.mp3')
-    tok_se = load_music('./SE/koura.mp3')
+    tok_se = load_wav('./SE/humi.wav')
     DEATH_SE = load_music('./SE/death.mp3')
 
     read_map.map_read()
@@ -114,7 +113,7 @@ def enter():
 
         # enemy
         # enemy = Enemy_normal(500, 104)
-        enemy.append(Enemy_normal(500, 104))
+        enemy.append(Enemy_normal(400, 104))
         enemy.append(Enemy_normal(1300, 104))
         enemy.append(Enemy_normal(7980, 700, 7400))
         enemy.append(Enemy_normal(8100, 104))
@@ -169,7 +168,7 @@ def enter():
         grass = read_map.map_mapping
 
         stage_bgm = load_music('./BGM/spelunk.mp3')
-        stage_bgm.set_volume(60)
+        stage_bgm.set_volume(30)
         stage_bgm.repeat_play()
         # ------------ 시작 브금 ------------------
         if flagpos.flag_pos_y:
@@ -282,7 +281,7 @@ def update():
 
     for a, b, group in game_world.all_collision_pairs():
         if collide(a, b) == 1:
-            print('COLLISION by ', group)
+            # print('COLLISION by ', group)
             b.handle_collision(a, group)
             a.handle_collision(b, group)
         if collide(a, b) == 2:
@@ -313,24 +312,19 @@ def collide(a, b):
     if ra < lb: return False
     if ta < bb: return False
     if ba > tb: return False
-    # 일반 적
-    # if b == enemy[0] or b == enemy[1] or b == enemy[2]:
-    #     print('됐어!')
-    #     return True
+
     for i in range(len(enemy)):
         if b == enemy[i] and ba <= tb + 2 and ba > tb - 10:
             return 2
         elif b == enemy[i]:
-            print('됐어!')
+            # print('됐어!')
             return True
-        # if b == enemy[i]:
-        #     print('됐어!')
-        #     return True
+
 
     # 로켓 적
     for i in range(len(rocket)):
         if b == rocket[i]:
-            print('됐어!')
+            # print('됐어!')
             return True
 
     # 터틀 적
@@ -338,18 +332,18 @@ def collide(a, b):
         if b == enemy_turtle[i] and ba <= tb + 2 and ba > tb - 10:
             return 2
         elif b == enemy_turtle[i]:
-            print('됐어!')
+            # print('됐어!')
             return True
 
     # air 적
     for i in range(len(enemy_air)):
         if b == enemy_air[i]:
-            print('됐어!')
+            # print('됐어!')
             return True
     # fireball 적
     for i in range(len(enemy_fireball)):
         if b == enemy_fireball[i]:
-            print('됐어!')
+            # print('됐어!')
             return True
 
     # 망토 적
@@ -357,7 +351,7 @@ def collide(a, b):
         if b == enemy_cloakman[i] and ba <= tb + 2 and ba > tb - 10:
             return 2
         elif b == enemy_cloakman[i]:
-            print('됐어!')
+            # print('됐어!')
             return True
     # 1 벽돌 블럭 충돌 처리
     if b.crash_number == 1 and a.crash_number == 9999:
@@ -428,12 +422,12 @@ def collide(a, b):
             return 2
 
 
-    # # 55 결승 봉 충돌 처리
-    # if b.crash_number == 11 and a.crash_number == 9999:
-    #     if a.y < b.y:
-    #         return True
-    #     elif a.y - 35 > b.y + 220:
-    #         return 2
+    # 55 결승 봉 충돌 처리
+    if b.crash_number == 11 and a.crash_number == 9999:
+        if a.y < b.y:
+            return True
+        elif a.y - 35 > b.y + 220:
+            return 2
 
     # 99 올라가는 블럭 충돌 처리
     if b.crash_number == 99 and a.crash_number == 9999:
@@ -449,12 +443,7 @@ def collide(a, b):
             return True
         elif a.y - 38 > b.y:
             return 2
-    #
-    # if a.crash_number == 25 and b.crash_number == 1:
-    #     if a.y < b.y:
-    #         return True
-    #     elif a.y - 38 > b.y + 20:
-    #         return 2
+
 
 
     return True

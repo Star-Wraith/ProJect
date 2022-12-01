@@ -66,7 +66,7 @@ class Red_mushroom:
 
     def draw(self):
         self.image.clip_draw(40, 0, 40, 40, self.x - Project2D.camera, self.y)
-        draw_rectangle(*self.get_bb())
+        # draw_rectangle(*self.get_bb())
 
     def update(self):
         if self.up < 10 * game_framework.frame_time :
@@ -114,7 +114,7 @@ class Poison_mushroom:
 
     def draw(self):
         self.image.clip_draw(80, 0, 40, 40, self.x - Project2D.camera, self.y)
-        draw_rectangle(*self.get_bb())
+        # draw_rectangle(*self.get_bb())
 
     def update(self):
         if self.up < 10 * game_framework.frame_time:
@@ -162,7 +162,7 @@ class Star:
 
     def draw(self):
         self.image.clip_draw(120, 0, 40, 40, self.x - Project2D.camera, self.y)
-        draw_rectangle(*self.get_bb())
+        # draw_rectangle(*self.get_bb())
 
     def update(self):
         if self.up < 10 * game_framework.frame_time:
@@ -173,8 +173,6 @@ class Star:
         if self.x - Project2D.camera < 0:
             game_world.remove_object(self)
 
-        # if self.y < - 80:
-        #     game_world.remove_object(self)
 
         pass
 
@@ -211,7 +209,7 @@ class Switch_small:
 
     def draw(self):
         self.image.clip_draw(0, 0, 40, 40, self.x - Project2D.camera, self.y)
-        draw_rectangle(*self.get_bb())
+        # draw_rectangle(*self.get_bb())
 
     def update(self):
         if self.x - Project2D.camera < 0:
@@ -237,47 +235,6 @@ class Switch_small:
 
         pass
 
-# class Coin_by_switch:
-#     image = None
-#
-#     def __init__(self, x, y):  # 생성자
-#         if Coin_by_switch.image == None:
-#             Coin_by_switch.image = load_image('./res/item.PNG')
-#         self.x = x + 20
-#         self.y = y + 20
-#
-#         # 충돌 넘버
-#         self.crash_number = 75
-#
-#         self.brock_Sound = load_music('./SE/brockcoin.mp3')
-#
-#         self.live = 0
-#
-#
-#
-#
-#
-#     def draw(self):
-#         self.image.clip_draw(0, 0, 40, 40, self.x - Project2D.camera, self.y)
-#
-#     def update(self):
-#         self.live += game_framework.frame_time
-#         if self.live > 0.3:
-#             game_world.remove_object(self)
-#
-#         pass
-#
-#     def get_bb(self):
-#         return self.x - 20 - Project2D.camera, self.y - 20, self.x + 20 - Project2D.camera, self.y + 20
-#
-#     def handle_collision(self, other, group):
-#
-#
-#         pass
-#
-#     def handle_collision2(self, other, group):
-#
-#         pass
 
 class Pikachu:
     def __init__(self, x, y):  # 생성자
@@ -289,7 +246,7 @@ class Pikachu:
         # 충돌 넘버
         self.crash_number = 0
 
-        self.Sound = load_music('./SE/pikachu.mp3')
+        self.Sound = load_wav('./SE/pikachu.wav')
         self.Sound.set_volume(60)
         self.Sound.play()
 
